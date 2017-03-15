@@ -1,0 +1,11 @@
+---
+docker_download_dir: /opt/tmp
+
+docker_version: 1.13.1
+docker_user: docker
+docker_group: docker
+docker_uid: 666
+docker_gid: 666
+docker_bin_dir: /usr/local/bin
+docker_storage_driver: overlay
+docker_log_level: error

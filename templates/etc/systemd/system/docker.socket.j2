@@ -1,0 +1,13 @@
+[Unit]
+Documentation=https://github.com/docker/docker/tree/master/contrib/init/systemd
+Description=Docker Socket for the API
+PartOf=docker.service
+
+[Socket]
+ListenStream=/var/run/docker.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup={{docker_group}}
+
+[Install]
+WantedBy=sockets.target

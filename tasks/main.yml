@@ -1,0 +1,95 @@
+---
+- name: Create docker group
+  group:
+    name: "{{docker_group}}"
+    gid: "{{docker_gid}}"
+    state: present
+  tags:
+    - docker
+
+- name: Create docker user
+  user:
+    name: "{{docker_user}}"
+    uid: "{{docker_uid}}"
+    group: "{{docker_group}}"
+    shell: /usr/sbin/nologin
+  tags:
+    - docker
+
+- name: Create download directory (used to store archives)
+  file:
+    path: "{{docker_download_dir}}"
+    state: directory
+    mode: 0750
+  tags:
+    - docker
+
+- name: Downloading official Docker binaries archive
+  get_url:
+    url: https://get.docker.com/builds/Linux/x86_64/docker-{{docker_version}}.tgz
+    dest: "{{docker_download_dir}}/docker-{{docker_version}}.tgz"
+    mode: 0640
+  tags:
+    - docker 
+
+- name: Unzip downloaded Docker archive
+  unarchive:
+    src: "{{docker_download_dir}}/docker-{{docker_version}}.tgz"
+    dest: "{{docker_download_dir}}"
+    remote_src: yes
+    creates: "{{docker_download_dir}}/docker/docker"
+  tags:
+    - docker 
+
+- name: Copy Docker binaries to destination directory
+  copy:
+    src: "{{docker_download_dir}}/docker/{{item}}"
+    dest: "{{docker_bin_dir}}/{{item}}"
+    mode: 0755
+    owner: root
+    group: root
+    remote_src: yes
+  with_items:
+    - docker
+    - docker-containerd-shim
+    - docker-containerd
+    - docker-proxy
+    - docker-containerd-ctr
+    - dockerd
+    - docker-runc
+  tags:
+    - docker
+
+- name: Create docker.socket systemd file
+  template:
+    src: etc/systemd/system/docker.socket.j2
+    dest: /etc/systemd/system/docker.socket
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+  tags:
+    - docker 
+
+- name: Create docker.service systemd file
+  template:
+    src: etc/systemd/system/docker.service.j2
+    dest: /etc/systemd/system/docker.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+  tags:
+    - docker 
+
+- meta: flush_handlers
+
+- name: Enable and start Docker
+  service:
+    name: docker
+    enabled: yes
+    state: started
+  tags:
+    - docker
