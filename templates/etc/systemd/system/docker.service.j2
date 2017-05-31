@@ -11,11 +11,13 @@ Type=notify
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
 ExecStart={{docker_bin_dir}}/dockerd \
-          --iptables=false \
-          --ip-masq=false \
           --host=unix:///var/run/docker.sock \
           --log-level={{docker_log_level}} \
-          --storage-driver={{docker_storage_driver}}
+          --storage-driver={{docker_storage_driver}} \
+          --iptables={{docker_iptables}} \
+          --ip-masq={{docker_ip-masq}} \
+          --bip={{docker_bip}} \
+          --mtu={{docker_mtu}}
 ExecReload=/bin/kill -s HUP $MAINPID
 LimitNOFILE=1048576
 # Having non-zero Limit*s causes performance problems due to accounting overhead
