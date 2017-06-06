@@ -10,6 +10,6 @@ docker_bin_dir: /usr/local/bin
 docker_storage_driver: overlay
 docker_log_level: error
 docker_iptables: false
-docker_ip-masq: false
+docker_ip_masq: false
 docker_bip: ""
 docker_mtu: 1472
