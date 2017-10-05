@@ -1,7 +1,7 @@
 ---
 docker_download_dir: "/opt/tmp"
 
-docker_version: "1.12.6"
+docker_version: "17.03.2-ce"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666

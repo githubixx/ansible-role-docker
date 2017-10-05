@@ -26,7 +26,7 @@
 
 - name: Downloading official Docker binaries archive
   get_url:
-    url: https://get.docker.com/builds/Linux/x86_64/docker-{{docker_version}}.tgz
+    url: https://download.docker.com/linux/static/stable/x86_64/docker-{{docker_version}}.tgz
     dest: "{{docker_download_dir}}/docker-{{docker_version}}.tgz"
     mode: 0640
   tags:
