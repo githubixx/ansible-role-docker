@@ -1,3 +1,4 @@
+#jinja2: trim_blocks:False
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com (https://github.com/docker/docker/tree/master/contrib/init/systemd)
@@ -11,13 +12,10 @@ Type=notify
 # exists and systemd currently does not support the cgroup feature set required
 # for containers run by docker
 ExecStart={{docker_bin_dir}}/dockerd \
-          --host=unix:///var/run/docker.sock \
-          --log-level={{docker_log_level}} \
-          --storage-driver={{docker_storage_driver}} \
-          --iptables={{docker_iptables}} \
-          --ip-masq={{docker_ip_masq}} \
-          --bip={{docker_bip}} \
-          --mtu={{docker_mtu}}
+{%- for setting in dockerd_settings|sort %}
+  --{{setting}}={{dockerd_settings[setting]}} {% if not loop.last %}\{% endif %}
+{%- endfor %}
+
 ExecReload=/bin/kill -s HUP $MAINPID
 LimitNOFILE=1048576
 # Having non-zero Limit*s causes performance problems due to accounting overhead

@@ -60,6 +60,12 @@
   tags:
     - docker
 
+- name: Combine dockerd_settings and dockerd_settings_user (if defined)
+  set_fact:
+    dockerd_settings: "{{dockerd_settings | combine(dockerd_settings_user|default({})) }}"
+  tags:
+    - docker
+
 - name: Create docker.socket systemd file
   template:
     src: etc/systemd/system/docker.socket.j2
@@ -69,6 +75,7 @@
     mode: 0644
   notify:
     - reload systemd
+    - restart docker
   tags:
     - docker 
 
@@ -81,6 +88,7 @@
     mode: 0644
   notify:
     - reload systemd
+    - restart docker
   tags:
     - docker 
 
