@@ -14,5 +14,5 @@ dockerd_settings:
   "storage-driver": "overlay"
   "iptables": "false"
   "ip-masq": "false"
-  "bip": ""
-  "mtu": "1472"
+  "bip": "{{hostvars[inventory_hostname].flannel_subnet.stdout}}"
+  "mtu": "{{hostvars[inventory_hostname].flannel_mtu.stdout}}"
