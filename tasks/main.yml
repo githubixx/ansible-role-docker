@@ -60,6 +60,14 @@
   tags:
     - docker
 
+- name: Extract flannel subnet
+  shell: cat /run/flannel/subnet.env | grep FLANNEL_SUBNET | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,3}'
+  register: flannel_subnet
+
+- name: Extract flannel MTU
+  shell: cat /run/flannel/subnet.env | grep FLANNEL_MTU | grep -Eo '[0-9]{1,4}'
+  register: flannel_mtu
+
 - name: Combine dockerd_settings and dockerd_settings_user (if defined)
   set_fact:
     dockerd_settings: "{{dockerd_settings | combine(dockerd_settings_user|default({})) }}"
