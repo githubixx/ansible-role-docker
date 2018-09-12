@@ -1,7 +1,7 @@
 ansible-role-docker
 ===================
 
-Installs Docker from official Docker binaries archive. For managing Docker daemon systemd is used. Targeting mainly Ubuntu 16.04 but should work with other Linux OS using systemd. This Ansible playbook is used in [Kubernetes the not so hard way with Ansible (at Scaleway) - Part 6 - Control plane](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-at-scaleway-part-6/) and [Kubernetes the not so hard way with Ansible (at Scaleway) - Part 7 - Worker](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-at-scaleway-part-7/).
+Installs Docker from official Docker binaries archive. For managing Docker daemon systemd is used. Targeting mainly Ubuntu 16.04/18.04 but should work with other Linux OS using systemd. This Ansible playbook is used in [Kubernetes the not so hard way with Ansible - Control plane](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-control-plane/) and [Kubernetes the not so hard way with Ansible - Worker](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-worker/).
 
 Versions
 --------
@@ -11,12 +11,17 @@ I tag every release and try to stay with [semantic versioning](http://semver.org
 Requirements
 ------------
 
-Since this role is targeting Ubuntu 16.04 a recent kernel should be used (at time of writing it was kernel 4.10.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Verify that you have `overlayfs` filesystem available if you want to use it instead of e.g. `aufs` (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine) on your controller and worker instances. In my case `overlayfs` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). We'll configure Docker to use `overlayfs` by default because it's one of the best choises (Docker 1.13.x started to use `overlayfs` by default if available). But you can change the storage driver in the `dockerd_settings` if you like.
+A recent kernel should be used (at time of writing it was kernel 4.10.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Verify that you have `overlayfs` filesystem available if you want to use it instead of e.g. `aufs` (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine) on your controller and worker instances. In my case `overlayfs` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). We'll configure Docker to use `overlayfs` by default because it's one of the best choises (Docker 1.13.x started to use `overlayfs` by default if available). But you can change the storage driver in the `dockerd_settings` if you like.
 
 The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). I disabled most parts of Docker networking as I leave this up to Flannel.
 
 Changelog
 ---------
+
+**r3.0.0_v17.03.2-ce**
+
+- works with Ubuntu 18.04
+- update README
 
 **r2.0.0_v17.03.2-ce**
 
@@ -50,7 +55,7 @@ dockerd_settings:
   "mtu": "1472"
 ```
 
-The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. to override `mtu` default value and add `debug` add the following settings to `group_vars/all.yml` or `group_vars/k8s.yml` or where ever it fit's best for you:
+The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. to override `mtu` default value and add `debug` add the following settings to `group_vars/all.yml` or where ever it fit's best for you:
 
 ```
 dockerd_settings_user:
