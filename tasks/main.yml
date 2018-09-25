@@ -1,4 +1,25 @@
 ---
+- name: Copy certificates for Docker registries (if provided)
+  copy:
+    src: "{{docker_ca_certificates_src_dir}}/{{item}}"
+    dest: "{{docker_ca_certificates_dst_dir}}/{{item}}"
+    mode: 0644
+    owner: root
+    group: root
+  with_items:
+    - "{{docker_ca_certificates}}"
+  when: docker_ca_certificates is defined
+  tags:
+    - docker
+    - docker-certificates
+
+- name: Update CA certificates
+  command: "update-ca-certificates"
+  when: docker_ca_certificates is defined
+  tags:
+    - docker
+    - docker-certificates
+
 - name: Create docker group
   group:
     name: "{{docker_group}}"
