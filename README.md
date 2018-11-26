@@ -18,6 +18,10 @@ The default variables of the role variables are configured to work with Kubernet
 Changelog
 ---------
 
+**r3.1.1_v18.06.1-ce**
+
+- Update Docker to `v18.06.1-ce`
+
 **r3.1.0_v17.03.2-ce**
 
 - introduce `docker_ca_certificates_src_dir`, `docker_ca_certificates_dst_dir` and `docker_ca_certificates` variables
