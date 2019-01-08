@@ -6,6 +6,8 @@ Changelog
 - use correct semantic versioning as described in https://semver.org. Needed for Ansible Galaxy importer as it now insists on using semantic versioning.
 - moved changelog entries to separate file
 - make Ansible linter happy
+- use systemd module instead of systemctl command for handlers
+- increase min. Ansible version from 2.2 to 2.4
 - no major changes but decided to start a new major release as versioning scheme changed quite heavily
 
 **r3.1.1_v18.06.1-ce**
