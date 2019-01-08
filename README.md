@@ -18,23 +18,6 @@ The default variables of the role variables are configured to work with Kubernet
 Changelog
 ---------
 
-**r3.1.0_v17.03.2-ce**
-
-- introduce `docker_ca_certificates_src_dir`, `docker_ca_certificates_dst_dir` and `docker_ca_certificates` variables
-
-**r3.0.0_v17.03.2-ce**
-
-- works with Ubuntu 18.04
-- update README
-
-**r2.0.0_v17.03.2-ce**
-
-- major refactoring
-- introduce flexible parameter settings for dockerd daemon via `dockerd_settings` and `dockerd_settings_user`
-
-**r1.0.0_v17.03.2-ce**
-
-- initial release
 
 Role Variables
 --------------
@@ -44,7 +27,7 @@ Role Variables
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "17.03.2-ce"
+docker_version: "18.06.1-ce"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
