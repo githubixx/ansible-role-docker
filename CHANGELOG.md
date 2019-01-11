@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**5.0.0+18.06.1**
+
+- restart Docker daemon if docker binaries changes
+- by specifing `--extra-vars="upgrade_docker=true"` to `ansible-playbook` download/unzip of new Docker archive is forced
+
 **4.0.0+18.06.1**
 
 - use correct semantic versioning as described in https://semver.org. Needed for Ansible Galaxy importer as it now insists on using semantic versioning.

@@ -6,18 +6,19 @@ Installs Docker from official Docker binaries archive (no PPA or apt repository)
 Versions
 --------
 
-I tag every release and try to stay with [semantic versioning](http://semver.org) (well kind of). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `r1.0.0_v17.03.2-ce` means this is release `1.0.0` of this role and it's meant to be used with Docker version `17.03.2-ce`. If the role itself changes `rX.Y.Z` will increase. If the Docker version changes `vAA.BB.C-xy` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `5.0.0+18.06.1` means this is release `5.0.0` of this role and it's meant to be used with Docker version `18.06.1` (`ce` edition). If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
 Requirements
 ------------
 
-A recent kernel should be used (at time of writing it was kernel 4.10.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Verify that you have `overlayfs` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine. In my case `overlayfs` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). `overlayfs` is used by default because it's one of the best choises (Docker 1.13.x started to use `overlayfs` by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
+A recent kernel should be used (at time of writing it was kernel 4.15.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 has already a descent kernel by default. Verify that you have `overlay` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine. In my case `overlay` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). `overlay` filesystem is used by default because it's one of the best choises (Docker 1.13.x started to use `overlay` filesystem by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
 
-The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). I disabled most parts of Docker networking as I leave this up to Flannel.
+**NOTE**: The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). I disabled most parts of Docker networking as I leave this up to Flannel.
 
 Changelog
 ---------
 
+see [Changelog](https://github.com/githubixx/ansible-role-docker/CHANGELOG.md)
 
 Role Variables
 --------------
@@ -79,6 +80,8 @@ dockerd_settings_user:
   "mtu": "1450"
   "debug": ""
 ```
+
+If you want upgrade Docker update `docker_version` variable accordingly. Afterwards if you run `ansible-playbook` and supply the argument `--extra-vars="upgrade_docker=true"` the playbook will download the specified Docker version and installs the binaries. This will cause systemd to restart `docker.service`. To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` parameter or reduce parallel Ansible tasks with `--forks`.
 
 Example Playbook
 ----------------
