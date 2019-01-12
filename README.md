@@ -13,7 +13,7 @@ Requirements
 
 A recent kernel should be used (at time of writing it was kernel 4.15.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 has already a descent kernel by default. Verify that you have `overlay` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine. In my case `overlay` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). `overlay` filesystem is used by default because it's one of the best choises (Docker 1.13.x started to use `overlay` filesystem by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
 
-**NOTE**: The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). I disabled most parts of Docker networking as I leave this up to Flannel.
+**NOTE**: The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). See comment for `dockerd_settings` for more information. I disabled most parts of Docker networking as I leave this up to Flannel.
 
 Changelog
 ---------
@@ -37,7 +37,10 @@ docker_gid: 666
 docker_bin_dir: "/usr/local/bin"
 
 # Settings for "dockerd" daemon. Will be provided as paramter to "dockerd" in
-# systemd service file for Docker.
+# systemd service file for Docker. This settings are used to work out of the
+# box with Kubernetes and Flannel network overlay. If you don't need this
+# and just want to use "default" Docker networking see below (`dockerd_settings_user`
+# variable):
 dockerd_settings:
   "host": "unix:///var/run/docker.sock"
   "log-level": "error"
@@ -52,9 +55,11 @@ dockerd_settings:
 # plus "/docker-ca-certificates". That means if the user's $HOME directory is e.g.
 # "/home/da_user" then "docker_ca_certificates_src_dir" will have a value of
 # "/home/da_user/docker-ca-certificates".
+# If you don't need CA certificates just leave the variable as is.
 docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 # The directory where the program "update-ca-certificates" searches for CA certificate
 # files (besides other locations).
+# If you don't need CA certificates just leave the variable as is.
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 ```
 
@@ -73,13 +78,23 @@ docker_ca_certificates:
   - ca-docker.crt
 ```
 
-The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. to override `mtu` default value and add `debug` add the following settings to `group_vars/all.yml` or where ever it fit's best for you:
+The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. if you add the following variable and it's settings to `group_vars/all.yml` (or where ever it fit's best for you) `dockerd` will run with the default settings and overrides the default settings of this role (see above):
 
 ```
 dockerd_settings_user:
-  "mtu": "1450"
-  "debug": ""
+  "host": "unix:///var/run/docker.sock"
+  "log-level": "info"
+  "storage-driver": "aufs"
+  "iptables": "true"
+  "ip-masq": "true"
+  "bip": "172.17.0.0/16"
+  "mtu": "1500"
 ```
+
+Of course you can add more settings. Just add ;-)
+
+Upgrading Docker
+---------------
 
 If you want upgrade Docker update `docker_version` variable accordingly. Afterwards if you run `ansible-playbook` and supply the argument `--extra-vars="upgrade_docker=true"` the playbook will download the specified Docker version and installs the binaries. This will cause systemd to restart `docker.service`. To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` parameter or reduce parallel Ansible tasks with `--forks`.
 
