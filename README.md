@@ -18,7 +18,7 @@ A recent kernel should be used (at time of writing it was kernel 4.15.x on my VP
 Changelog
 ---------
 
-see [Changelog](https://github.com/githubixx/ansible-role-docker/CHANGELOG.md)
+see [Changelog](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
 
 Role Variables
 --------------
