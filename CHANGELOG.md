@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**5.1.0+18.06.1**
+
+- fix link to CHANGELOG
+- update README / provide info about restoring default dockerd settings
+
 **5.0.0+18.06.1**
 
 - restart Docker daemon if docker binaries changes
