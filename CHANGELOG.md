@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**6.0.0+18.09.2**
+
+- Update Docker to `v18.09.2-ce`
+
 **5.1.0+18.06.1**
 
 - fix link to CHANGELOG
