@@ -28,7 +28,7 @@ Role Variables
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "18.09.2-ce"
+docker_version: "18.09.6"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
