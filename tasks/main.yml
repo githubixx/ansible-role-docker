@@ -70,6 +70,20 @@
   tags:
     - docker
 
+- name: Remove binaries used in older Docker versions (<= 18.06.x)
+  file:
+    path: "{{ docker_bin_dir }}/{{ item }}"
+    state: absent
+  when: upgrade_docker is defined and upgrade_docker == "true"
+  with_items:
+    - docker-containerd-shim
+    - docker-containerd
+    - docker-proxy
+    - docker-containerd-ctr
+    - docker-runc
+  tags:
+    - docker
+
 - name: Copy Docker binaries to destination directory
   copy:
     src: "{{ docker_download_dir }}/docker/{{ item }}"
@@ -81,13 +95,14 @@
   notify:
     - restart docker
   with_items:
+    - containerd
+    - containerd-shim
+    - ctr
     - docker
-    - docker-containerd-shim
-    - docker-containerd
-    - docker-proxy
-    - docker-containerd-ctr
     - dockerd
-    - docker-runc
+    - docker-init
+    - docker-proxy
+    - runc
   tags:
     - docker
 
