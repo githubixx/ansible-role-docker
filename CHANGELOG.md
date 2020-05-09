@@ -1,6 +1,18 @@
 Changelog
 ---------
 
+**no change**
+
+- Deleted old tags not supported by Ansible Galaxy:
+
+```
+r1.0.0_v17.03.2-ce
+r2.0.0_v17.03.2-ce
+r3.0.0_v17.03.2-ce
+r3.1.0_v17.03.2-ce
+v1.0.0_r1.12.6
+```
+
 **6.0.0+18.09.6**
 
 - Update Docker to `v18.09.6`
