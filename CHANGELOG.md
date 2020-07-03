@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**7.0.0+18.09.6**
+
+- value for `ListenStream` changed to `/run/docker.sock` (old path is deprecated)
+- 
+
 **no change**
 
 - Deleted old tags not supported by Ansible Galaxy:

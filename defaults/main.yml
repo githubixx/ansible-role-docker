@@ -17,7 +17,7 @@ docker_bin_dir: "/usr/local/bin"
 # and just want to use "default" Docker networking see below (`dockerd_settings_user`
 # variable):
 dockerd_settings:
-  "host": "unix:///var/run/docker.sock"
+  "host": "unix:///run/docker.sock"
   "log-level": "error"
   "storage-driver": "overlay"
   "iptables": "false"
@@ -27,7 +27,7 @@ dockerd_settings:
 
 # If you need the default Docker settings define this variable in "group_vars/all.yml":
 # dockerd_settings_user:
-# "host": "unix:///var/run/docker.sock"
+# "host": "unix:///run/docker.sock"
 # "log-level": "info"
 # "storage-driver": "aufs"
 # "iptables": "true"
