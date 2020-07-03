@@ -11,9 +11,9 @@ I tag every release and try to stay with [semantic versioning](http://semver.org
 Requirements
 ------------
 
-A recent kernel should be used (at time of writing it was kernel 4.15.x on my VPS instance). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 has already a descent kernel by default. Verify that you have `overlay` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (execute `cat /proc/filesystems | grep overlay`). If you see an output you should be fine. In my case `overlay` is compiled into the kernel. If it's not compiled in you can normally load it via `modprobe -v overlay` (`-v` gives us a little bit more information). `overlay` filesystem is used by default because it's one of the best choises (Docker 1.13.x started to use `overlay` filesystem by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
+A recent kernel should be used (something like >= 4.4.x). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 and up have already a descent kernel by default. Verify that you have `overlay2` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (should be the case for kernel >= 4.4.x). `overlay2` filesystem is used by default because it's one of the best choises (Docker 1.13.x started to use `overlay` (v1) filesystem by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
 
-**NOTE**: The default variables of the role variables are configured to work with Kubernetes and Flannel overlay network. If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). See comment for `dockerd_settings` for more information. I disabled most parts of Docker networking as I leave this up to Flannel.
+**NOTE**: The default variables of the role variables are configured to work with Kubernetes (and Flannel overlay network or Cilium). If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). See comment for `dockerd_settings` for more information. I disabled most parts of Docker networking as I leave this up to Flannel.
 
 Changelog
 ---------
@@ -28,7 +28,7 @@ Role Variables
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "18.09.6"
+docker_version: "18.09.9"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -42,9 +42,9 @@ docker_bin_dir: "/usr/local/bin"
 # and just want to use "default" Docker networking see below (`dockerd_settings_user`
 # variable):
 dockerd_settings:
-  "host": "unix:///var/run/docker.sock"
+  "host": "unix:///run/docker.sock"
   "log-level": "error"
-  "storage-driver": "overlay"
+  "storage-driver": "overlay2"
   "iptables": "false"
   "ip-masq": "false"
   "bip": ""
@@ -82,7 +82,7 @@ The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden
 
 ```
 dockerd_settings_user:
-  "host": "unix:///var/run/docker.sock"
+  "host": "unix:///run/docker.sock"
   "log-level": "info"
   "storage-driver": "aufs"
   "iptables": "true"
