@@ -1,8 +1,9 @@
 Changelog
 ---------
 
-**7.0.0+18.09.6**
+**7.0.0+18.09.9**
 
+- Update Docker to `v18.09.9`
 - value for `ListenStream` changed to `/run/docker.sock` (old path is deprecated)
 - change `--storage-driver` to `overlay2` (see [Legacy overlay storage driver](https://docs-stage.docker.com/engine/deprecated/#legacy-overlay-storage-driver))
 
