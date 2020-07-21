@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**7.0.1+18.09.9**
+
+- added Ubuntu 20.04 (Focal Fossa) as supported platform
+
 **7.0.0+18.09.9**
 
 - Update Docker to `v18.09.9`
