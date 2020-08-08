@@ -38,7 +38,7 @@ docker_bin_dir: "/usr/local/bin"
 
 # Settings for "dockerd" daemon. Will be provided as paramter to "dockerd" in
 # systemd service file for Docker. This settings are used to work out of the
-# box with Kubernetes and Flannel network overlay. If you don't need this
+# box with Kubernetes, Flannel network overlay or Cilium. If you don't need this
 # and just want to use "default" Docker networking see below (`dockerd_settings_user`
 # variable):
 dockerd_settings:
@@ -50,16 +50,25 @@ dockerd_settings:
   "bip": ""
   "mtu": "1472"
 
+# If you need the default Docker settings define this variable in "group_vars/all.yml" e.g.:
+# dockerd_settings_user:
+# "host": "unix:///run/docker.sock"
+# "log-level": "info"
+# "storage-driver": "aufs"
+# "iptables": "true"
+# "ip-masq": "true"
+# "bip": "172.17.0.0/16"
+# "mtu": "1500"
+
 # The directory from where to copy the Docker CA certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."
 # plus "/docker-ca-certificates". That means if the user's $HOME directory is e.g.
 # "/home/da_user" then "docker_ca_certificates_src_dir" will have a value of
 # "/home/da_user/docker-ca-certificates".
-# If you don't need CA certificates just leave the variable as is.
 docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
+
 # The directory where the program "update-ca-certificates" searches for CA certificate
 # files (besides other locations).
-# If you don't need CA certificates just leave the variable as is.
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 ```
 
@@ -78,7 +87,7 @@ docker_ca_certificates:
   - ca-docker.crt
 ```
 
-The settings for `dockerd` daemon defined in `dockerd_settings` can be overriden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. if you add the following variable and it's settings to `group_vars/all.yml` (or where ever it fit's best for you) `dockerd` will run with the default settings and overrides the default settings of this role (see above):
+These settings for `dockerd` daemon defined in `dockerd_settings` can be overridden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. if you add the following variable and it's settings to `group_vars/all.yml` (or where ever it fit's best for you) `dockerd` will run with the default settings and overrides the default settings of this role (see above):
 
 ```
 dockerd_settings_user:
