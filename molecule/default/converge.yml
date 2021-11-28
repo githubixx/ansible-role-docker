@@ -1,0 +1,20 @@
+---
+# Copyright (C) 2021 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- hosts: all
+  remote_user: vagrant
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Init pacman
+      raw: |
+        pacman-key --init
+        pacman-key --populate archlinux
+      changed_when: false
+      ignore_errors: true
+      when: ansible_distribution|lower == 'archlinux'
+
+    - name: Include Docker role
+      include_role:
+        name: githubixx.docker
