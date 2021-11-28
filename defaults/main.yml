@@ -29,7 +29,7 @@ dockerd_settings:
 # dockerd_settings_user:
 # "host": "unix:///run/docker.sock"
 # "log-level": "info"
-# "storage-driver": "aufs"
+# "storage-driver": "overlay2"
 # "iptables": "true"
 # "ip-masq": "true"
 # "bip": "172.17.0.0/16"
