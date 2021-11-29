@@ -9,6 +9,10 @@ galaxy_info:
       versions:
         - focal
         - bionic
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
   galaxy_tags:
     - docker
     - container
