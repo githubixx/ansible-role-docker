@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+**8.0.0+20.10.11**
+
+- update Docker to `v20.10.11`
+- add support for Debain 10 (Buster) + 11 (Bullseye)
+- add support for Archlinux
+- `aufs` storage driver is deprecated -> use `overlay2` by default
+- add Molecule tests
+
 **7.0.1+18.09.9**
 
 - added Ubuntu 20.04 (Focal Fossa) as supported platform
