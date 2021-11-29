@@ -1,0 +1,25 @@
+---
+- name: Prepare
+  hosts: test-docker-archlinux
+  gather_facts: false
+  tasks:
+    - name: Init pacman
+      raw: |
+        pacman-key --init
+        pacman-key --populate archlinux
+      become: true
+
+    - name: Updating pacman cache
+      raw: pacman -Sy
+      become: true
+
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (pacman --noconfirm python)
+      become: true
+
+    - name: Upgrade the whole system
+      raw: pacman --noconfirm -Su
+      become: true
+
+    - name: Reboot for kernel updates
+      reboot:

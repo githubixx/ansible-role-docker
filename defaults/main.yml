@@ -3,7 +3,7 @@
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "18.09.9"
+docker_version: "20.10.11"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -29,7 +29,7 @@ dockerd_settings:
 # dockerd_settings_user:
 # "host": "unix:///run/docker.sock"
 # "log-level": "info"
-# "storage-driver": "aufs"
+# "storage-driver": "overlay2"
 # "iptables": "true"
 # "ip-masq": "true"
 # "bip": "172.17.0.0/16"
