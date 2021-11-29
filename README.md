@@ -1,19 +1,19 @@
 ansible-role-docker
 ===================
 
-Installs Docker from official Docker binaries archive (no PPA or apt repository). For managing Docker daemon systemd is used. Targeting mainly Ubuntu 16.04/18.04 but should work with other Linux OS using systemd. This Ansible playbook is used in [Kubernetes the not so hard way with Ansible - Control plane](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-control-plane/) and [Kubernetes the not so hard way with Ansible - Worker](https://www.tauceti.blog/post/kubernetes-the-not-so-hard-way-with-ansible-worker/).
+Installs Docker from official Docker binaries archive (no PPA or apt repository). For managing Docker daemon systemd is used. Should work with basically every Linux OS using `systemd`. This Ansible playbook is used in [Kubernetes the not so hard way with Ansible - Control plane](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-control-plane/) and [Kubernetes the not so hard way with Ansible - Worker](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-worker-2020/).
 
 Versions
 --------
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `5.0.0+18.06.1` means this is release `5.0.0` of this role and it's meant to be used with Docker version `18.06.1` (`ce` edition). If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `8.0.0+20.10.11` means this is release `8.0.0` of this role and it's meant to be used with Docker version `20.10.11`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
 Requirements
 ------------
 
-A recent kernel should be used (something like >= 4.4.x). It makes sense to use a recent kernel for Docker in general. Ubuntu 16.04 additionally provides kernel 4.4.x and 4.8.x at least. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 and up have already a descent kernel by default. Verify that you have `overlay2` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (should be the case for kernel >= 4.4.x). `overlay2` filesystem is used by default because it's one of the best choises (Docker 1.13.x started to use `overlay` (v1) filesystem by default if available). But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
+A recent kernel should be used (something like >= 4.4.x). It makes sense to use a recent kernel for Docker in general. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 and up have already a descent kernel by default. Verify that you have `overlay2` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (should be the case for kernel >= 4.4.x). Meanwhile `aufs` is deprecated anyways. But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
 
-**NOTE**: The default variables of the role variables are configured to work with Kubernetes (and Flannel overlay network or Cilium). If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). See comment for `dockerd_settings` for more information. I disabled most parts of Docker networking as I leave this up to Flannel.
+**NOTE**: The default variables of the role variables are configured to work with Kubernetes (and `Flannel` overlay network or `Cilium`). If you want to use this role without Kubernetes you may want to adjust a few settings (especially `iptables`, `ip-masq`, `bip` and `mtu` `dockerd_settings`). See comment for `dockerd_settings` for more information. I disabled most parts of `Docker` networking as it' not needed for `Kubernetes`.
 
 Changelog
 ---------
@@ -114,6 +114,25 @@ Example Playbook
 - hosts: docker_hosts
   roles:
     - githubixx.docker
+```
+
+Testing
+-------
+
+This role has a small test setup that is created using [Molecule](https://github.com/ansible-community/molecule), libvirt (vagrant-libvirt) and QEMU/KVM. Please see my blog post [Testing Ansible roles with Molecule, libvirt (vagrant-libvirt) and QEMU/KVM](https://www.tauceti.blog/posts/testing-ansible-roles-with-molecule-libvirt-vagrant-qemu-kvm/) how to setup. The test configuration is [here](https://github.com/githubixx/ansible-role-docker/tree/master/molecule/default).
+
+Afterwards molecule can be executed:
+
+```bash
+molecule converge
+```
+
+This will setup a few virtual machines (VM) with different supported Linux operating systems and installs `docker` role.
+
+To clean up run
+
+```bash
+molecule destroy
 ```
 
 License
