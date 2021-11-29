@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**8.0.1+20.10.11**
+
+- update README
+- make `meta/main.yml` valid YAML file
+
 **8.0.0+20.10.11**
 
 - update Docker to `v20.10.11`
