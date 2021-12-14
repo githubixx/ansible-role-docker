@@ -80,15 +80,7 @@
     remote_src: yes
   notify:
     - restart docker
-  with_items:
-    - containerd
-    - containerd-shim
-    - ctr
-    - docker
-    - dockerd
-    - docker-init
-    - docker-proxy
-    - runc
+  with_items: "{{ docker_copy_binaries }}"
   tags:
     - docker
 
