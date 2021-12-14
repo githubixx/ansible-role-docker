@@ -8,8 +8,23 @@ docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
 docker_gid: 666
+
 # Directory to store Docker binaries. Should be in your search PATH!
 docker_bin_dir: "/usr/local/bin"
+
+# binary to copy to Directory to store Docker binaries : docker_bin_dir
+docker_copy_binaries:
+  - containerd
+  - containerd-shim
+  - containerd-shim-runc-v2
+  - ctr
+  - docker
+  - dockerd
+  - docker-init
+  - docker-proxy
+  - runc
+  
+
 
 # Settings for "dockerd" daemon. Will be provided as paramter to "dockerd" in
 # systemd service file for Docker. This settings are used to work out of the
