@@ -1,4 +1,10 @@
 ---
+- name: Include variables
+  include_vars:
+    file: "main.yml"
+  tags:
+    - docker
+
 - name: Copy certificates for Docker registries (if provided)
   copy:
     src: "{{ docker_ca_certificates_src_dir }}/{{ item }}"
@@ -80,15 +86,9 @@
     remote_src: yes
   notify:
     - restart docker
-  with_items:
-    - containerd
-    - containerd-shim
-    - ctr
-    - docker
-    - dockerd
-    - docker-init
-    - docker-proxy
-    - runc
+  loop: "{{ docker_binaries }}"
+  loop_control:
+    loop_var: "binary"
   tags:
     - docker
 
