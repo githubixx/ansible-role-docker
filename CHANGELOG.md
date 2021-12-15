@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+**8.1.0+20.10.12**
+
+- update Docker to `v20.10.12`
+- add missing file `containerd-shim-runc-v2`
+
 **8.0.1+20.10.11**
 
 - update README
