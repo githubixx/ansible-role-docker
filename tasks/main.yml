@@ -78,8 +78,8 @@
 
 - name: Copy Docker binaries to destination directory
   copy:
-    src: "{{ docker_download_dir }}/docker/{{ item }}"
-    dest: "{{ docker_bin_dir }}/{{ item }}"
+    src: "{{ docker_download_dir }}/docker/{{ binary }}"
+    dest: "{{ docker_bin_dir }}/{{ binary }}"
     mode: 0755
     owner: root
     group: root
