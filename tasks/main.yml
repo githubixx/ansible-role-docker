@@ -1,4 +1,10 @@
 ---
+- name: Include variables
+  include_vars:
+    file: "main.yml"
+  tags:
+    - docker
+
 - name: Copy certificates for Docker registries (if provided)
   copy:
     src: "{{ docker_ca_certificates_src_dir }}/{{ item }}"
@@ -72,23 +78,17 @@
 
 - name: Copy Docker binaries to destination directory
   copy:
-    src: "{{ docker_download_dir }}/docker/{{ item }}"
-    dest: "{{ docker_bin_dir }}/{{ item }}"
+    src: "{{ docker_download_dir }}/docker/{{ binary }}"
+    dest: "{{ docker_bin_dir }}/{{ binary }}"
     mode: 0755
     owner: root
     group: root
     remote_src: yes
   notify:
     - restart docker
-  with_items:
-    - containerd
-    - containerd-shim
-    - ctr
-    - docker
-    - dockerd
-    - docker-init
-    - docker-proxy
-    - runc
+  loop: "{{ docker_binaries }}"
+  loop_control:
+    loop_var: "binary"
   tags:
     - docker
 
