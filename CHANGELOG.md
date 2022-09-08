@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+**8.2.0+20.10.17**
+
+- update Docker to `v20.10.17`
+
 **8.1.0+20.10.12**
 
 - update Docker to `v20.10.12`
