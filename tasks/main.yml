@@ -71,7 +71,7 @@
   ansible.builtin.unarchive:
     src: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}"
-    remote_src: yes
+    remote_src: true
   when: not docker_bin_stat.stat.exists or (upgrade_docker is defined and upgrade_docker == "true")
   tags:
     - docker
@@ -83,7 +83,7 @@
     mode: 0755
     owner: root
     group: root
-    remote_src: yes
+    remote_src: true
   notify:
     - restart docker
   loop: "{{ docker_binaries }}"
@@ -130,7 +130,7 @@
 - name: Enable and start Docker
   ansible.builtin.service:
     name: docker
-    enabled: yes
+    enabled: true
     state: started
   tags:
     - docker
