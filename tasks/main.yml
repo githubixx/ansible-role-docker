@@ -94,7 +94,7 @@
 
 - name: Combine dockerd_settings and dockerd_settings_user (if defined)
   ansible.builtin.set_fact:
-    dockerd_settings: "{{ dockerd_settings | combine(dockerd_settings_user|default({})) }}"
+    dockerd_settings: "{{ dockerd_settings | combine(dockerd_settings_user | default({})) }}"
   tags:
     - docker
 
