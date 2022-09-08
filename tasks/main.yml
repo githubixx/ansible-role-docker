@@ -1,12 +1,12 @@
 ---
 - name: Include variables
-  include_vars:
+  ansible.builtin.include_vars:
     file: "main.yml"
   tags:
     - docker
 
 - name: Copy certificates for Docker registries (if provided)
-  copy:
+  ansible.builtin.copy:
     src: "{{ docker_ca_certificates_src_dir }}/{{ item }}"
     dest: "{{ docker_ca_certificates_dst_dir }}/{{ item }}"
     mode: 0644
@@ -20,14 +20,14 @@
     - docker-certificates
 
 - name: Update CA certificates
-  command: "update-ca-certificates"
+  ansible.builtin.command: "update-ca-certificates"
   when: docker_ca_certificates is defined
   tags:
     - docker
     - docker-certificates
 
 - name: Create docker group
-  group:
+  ansible.builtin.group:
     name: "{{ docker_group }}"
     gid: "{{ docker_gid }}"
     state: present
@@ -35,7 +35,7 @@
     - docker
 
 - name: Create docker user
-  user:
+  ansible.builtin.user:
     name: "{{ docker_user }}"
     uid: "{{ docker_uid }}"
     group: "{{ docker_group }}"
@@ -44,7 +44,7 @@
     - docker
 
 - name: Create download directory (used to store archives)
-  file:
+  ansible.builtin.file:
     path: "{{ docker_download_dir }}"
     state: directory
     mode: 0750
@@ -52,14 +52,14 @@
     - docker
 
 - name: Register docker binary is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ docker_bin_dir }}/docker"
   register: docker_bin_stat
   tags:
     - docker
 
 - name: Downloading official Docker binaries archive
-  get_url:
+  ansible.builtin.get_url:
     url: "https://download.docker.com/linux/static/stable/x86_64/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
     mode: 0640
@@ -68,7 +68,7 @@
     - docker
 
 - name: Unzip downloaded Docker archive
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}"
     remote_src: yes
@@ -77,7 +77,7 @@
     - docker
 
 - name: Copy Docker binaries to destination directory
-  copy:
+  ansible.builtin.copy:
     src: "{{ docker_download_dir }}/docker/{{ binary }}"
     dest: "{{ docker_bin_dir }}/{{ binary }}"
     mode: 0755
@@ -93,13 +93,13 @@
     - docker
 
 - name: Combine dockerd_settings and dockerd_settings_user (if defined)
-  set_fact:
+  ansible.builtin.set_fact:
     dockerd_settings: "{{ dockerd_settings | combine(dockerd_settings_user|default({})) }}"
   tags:
     - docker
 
 - name: Create docker.socket systemd file
-  template:
+  ansible.builtin.template:
     src: etc/systemd/system/docker.socket.j2
     dest: /etc/systemd/system/docker.socket
     owner: root
@@ -112,7 +112,7 @@
     - docker
 
 - name: Create docker.service systemd file
-  template:
+  ansible.builtin.template:
     src: etc/systemd/system/docker.service.j2
     dest: /etc/systemd/system/docker.service
     owner: root
@@ -124,10 +124,11 @@
   tags:
     - docker
 
-- meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Enable and start Docker
-  service:
+  ansible.builtin.service:
     name: docker
     enabled: yes
     state: started
