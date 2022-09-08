@@ -106,8 +106,8 @@
     group: root
     mode: 0644
   notify:
-    - reload systemd
-    - restart docker
+    - Reload systemd
+    - Restart docker
   tags:
     - docker
 
@@ -119,8 +119,8 @@
     group: root
     mode: 0644
   notify:
-    - reload systemd
-    - restart docker
+    - Reload systemd
+    - Restart docker
   tags:
     - docker
 
