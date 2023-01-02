@@ -32,8 +32,29 @@ docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
 docker_gid: 666
+
 # Directory to store Docker binaries. Should be in your search PATH!
 docker_bin_dir: "/usr/local/bin"
+
+# For Archlinux the values of this variable can either be "iptables" or
+# "nftables". For all other OSes "iptables" is a requirement as Docker
+# depends on "iptables" command. In case of Archlinux "nftables" also
+# includes "iptables" so both work.
+# 
+# Ubuntu 18.04, 20.04 and Debian 10 only provides "iptables".
+#
+# Ubuntu 22.04 and Debian 11 allows to install "iptables" and "nftables"
+# in parallel.
+#
+# So for Archlinux if either "iptables" or "iptables-nft" package is
+# already installed this role won't change anything. For all other OSes
+# "iptables" package is a requirement. So even if "nftables" package is
+# already installed this role will install "iptables" package.
+#
+# Possible values:
+# - iptables # Possible for all supported OSes
+# - nftables # Only for Archlinux
+docker_firewall_flavor: "iptables"
 
 # Settings for "dockerd" daemon. Will be provided as parameter to "dockerd" in
 # systemd service file for Docker. These variables and it's values can be
@@ -46,7 +67,6 @@ dockerd_settings:
   "storage-driver": "overlay2"
   "iptables": "true"
   "ip-masq": "true"
-  "bip": "172.17.0.0/16"
   "mtu": "1500"
 
 # To override settings defined in `dockerd_settings` this variable can be
@@ -59,18 +79,18 @@ dockerd_settings:
 
 # The directory from where to copy the Docker CA certificates. By default this
 # will expand to user's LOCAL $HOME (the user that run's "ansible-playbook ..."
-# plus "/docker-ca-certificates". That means if the user's $HOME directory is e.g.
-# "/home/da_user" then "docker_ca_certificates_src_dir" will have a value of
-# "/home/da_user/docker-ca-certificates".
+# plus "/docker-ca-certificates". That means if the user's $HOME directory is
+# e.g. "/home/da_user" then "docker_ca_certificates_src_dir" will have a value
+# of "/home/da_user/docker-ca-certificates".
 docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 
-# The directory where the program "update-ca-certificates" searches for CA certificate
-# files (besides other locations).
+# The directory where the program "update-ca-certificates" searches for CA
+# certificate files (besides other locations).
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 ```
 
 Variables with no defaults:
-
+ 
 ```yaml
 # If you've a Docker registry with a self signed certificate you can copy the
 # certificate authority (CA) file to the remote host to the CA certificate store.
@@ -93,7 +113,6 @@ dockerd_settings_user:
   "storage-driver": "aufs"
   "iptables": "false"
   "ip-masq": "false"
-  "bip": "172.18.0.0/16"
   "mtu": "1400"
 ```
 

@@ -8,8 +8,29 @@ docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
 docker_gid: 666
+
 # Directory to store Docker binaries. Should be in your search PATH!
 docker_bin_dir: "/usr/local/bin"
+
+# For Archlinux the values of this variable can either be "iptables" or
+# "nftables". For all other OSes "iptables" is a requirement as Docker
+# depends on "iptables" command. In case of Archlinux "nftables" also
+# includes "iptables" so both work.
+# 
+# Ubuntu 18.04, 20.04 and Debian 10 only provides "iptables".
+#
+# Ubuntu 22.04 and Debian 11 allows to install "iptables" and "nftables"
+# in parallel.
+#
+# So for Archlinux if either "iptables" or "iptables-nft" package is
+# already installed this role won't change anything. For all other OSes
+# "iptables" package is a requirement. So even if "nftables" package is
+# already installed this role will install "iptables" package.
+#
+# Possible values:
+# - iptables # Possible for all supported OSes
+# - nftables # Only for Archlinux
+docker_firewall_flavor: "iptables"
 
 # Settings for "dockerd" daemon. Will be provided as parameter to "dockerd" in
 # systemd service file for Docker. These variables and it's values can be
@@ -22,7 +43,6 @@ dockerd_settings:
   "storage-driver": "overlay2"
   "iptables": "true"
   "ip-masq": "true"
-  "bip": "172.17.0.0/16"
   "mtu": "1500"
 
 # To override settings defined in `dockerd_settings` this variable can be
