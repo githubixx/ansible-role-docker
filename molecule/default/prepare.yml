@@ -1,25 +1,39 @@
 ---
-- name: Prepare
+- name: Prepare Ubuntu 22.04
+  hosts: test-docker-ubuntu2204
+  gather_facts: false
+  tasks:
+    - name: Install python3-requests package
+      ansible.builtin.package:
+        name: "python3-requests"
+        state: present
+
+- name: Prepare Archlinux
   hosts: test-docker-archlinux
   gather_facts: false
   tasks:
     - name: Init pacman
-      raw: |
+      ansible.builtin.raw: |
         pacman-key --init
         pacman-key --populate archlinux
       become: true
 
     - name: Updating pacman cache
-      raw: pacman -Sy
+      ansible.builtin.raw: pacman -Sy
       become: true
 
     - name: Install python for Ansible
-      raw: test -e /usr/bin/python || (pacman --noconfirm python)
+      ansible.builtin.raw: test -e /usr/bin/python || (pacman --noconfirm python)
       become: true
 
     - name: Upgrade the whole system
-      raw: pacman --noconfirm -Su
+      ansible.builtin.raw: pacman --noconfirm -Su
       become: true
 
+    - name: Install python3-requests package
+      ansible.builtin.package:
+        name: "python-requests"
+        state: present
+
     - name: Reboot for kernel updates
-      reboot:
+      ansible.builtin.reboot:

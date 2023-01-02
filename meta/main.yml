@@ -12,6 +12,7 @@ galaxy_info:
       versions:
         - "focal"
         - "bionic"
+        - "jammy"
     - name: Debian
       versions:
         - "buster"
@@ -19,3 +20,5 @@ galaxy_info:
   galaxy_tags:
     - docker
     - container
+    - role
+    - ansible

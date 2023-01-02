@@ -1,9 +1,56 @@
 ---
-- name: Include variables
+- name: Load common variables
   ansible.builtin.include_vars:
     file: "main.yml"
   tags:
     - docker
+
+- name: Load required variables based on the OS type
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Register if iptables/nftables is installed
+  when:
+    - "docker__ip_nft_tables_package.value in ansible_facts.packages"
+  ansible.builtin.set_fact:
+    docker__ip_nft_tables_installed: true
+  loop: "{{ docker_ip_nft_tables_packages | dict2items }}"
+  loop_control:
+    loop_var: docker__ip_nft_tables_package
+
+- name: Print if iptables/nftables is installed
+  when:
+    - docker__ip_nft_tables_installed is defined
+    - docker__ip_nft_tables_installed
+  ansible.builtin.debug:
+    msg: "Either iptables or nftables is installed"
+
+- name: Install required iptables packages
+  when:
+    - docker__ip_nft_tables_installed is not defined
+    - docker_firewall_flavor == "iptables"
+  ansible.builtin.package:
+    name: "{{ docker_ip_nft_tables_packages.iptables }}"
+    state: present
+
+- name: Install required nftables packages
+  when:
+    - docker__ip_nft_tables_installed is not defined
+    - docker_firewall_flavor == "nftables"
+  ansible.builtin.package:
+    name: "{{ docker_ip_nft_tables_packages.nftables }}"
+    state: present
 
 - name: Copy certificates for Docker registries (if provided)
   ansible.builtin.copy:
