@@ -24,6 +24,6 @@
     - name: Check goecho output
       ansible.builtin.uri:
         url: http://localhost:8080
-        return_content: yes
+        return_content: true
       register: goecho
       failed_when: "'User-Agent' not in goecho.content"
