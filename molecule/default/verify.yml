@@ -1,0 +1,31 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Verify setup
+  hosts: all
+  vars:
+    hosts_count: "test"
+  tasks:
+    - name: Pull image
+      community.docker.docker_image:
+        name: xperimental/goecho
+        tag: v1.8
+        source: pull
+        pull:
+          platform: amd64
+
+    - name: Start container
+      community.docker.docker_container:
+        name: goecho
+        image: xperimental/goecho:v1.8
+        state: started
+        ports:
+          - "8080:8080"
+
+    - name: Check goecho output
+      ansible.builtin.uri:
+        url: http://localhost:8080
+        return_content: yes
+      register: goecho
+      failed_when: "'User-Agent' not in goecho.content"

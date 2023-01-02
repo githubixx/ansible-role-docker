@@ -16,7 +16,12 @@ dockerd_settings:
 ```
 
 - update Docker to `v20.10.22`
+- add support for Ubuntu `22.04` (Jammy Jellyfish)
+- add `iptables`/`nftables` handling
+- add `.gitignore`
 - add `.yamllint`
+- add Molecule `verify` step
+- increase memory for Molecule test instances
 
 ## 8.2.0+20.10.17
 

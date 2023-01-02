@@ -145,6 +145,12 @@ molecule converge
 
 This will setup a few virtual machines (VM) with different supported Linux operating systems and installs `docker` role.
 
+To run a few tests:
+
+```bash
+molecule verify
+```
+
 To clean up run
 
 ```bash
