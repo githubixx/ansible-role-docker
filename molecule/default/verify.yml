@@ -4,8 +4,6 @@
 
 - name: Verify setup
   hosts: all
-  vars:
-    hosts_count: "test"
   tasks:
     - name: Pull image
       community.docker.docker_image:
