@@ -11,7 +11,7 @@ driver:
     name: libvirt
     type: libvirt
     options:
-      memory: 256
+      memory: 384
       cpus: 2
 
 platforms:
