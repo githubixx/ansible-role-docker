@@ -22,6 +22,7 @@ dockerd_settings:
 - add `.yamllint`
 - add Molecule `verify` step
 - increase memory for Molecule test instances
+- add Github release action to push new release to Ansible Galaxy
 
 ## 8.2.0+20.10.17
 
