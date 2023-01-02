@@ -1,5 +1,5 @@
 ---
-# Copyright (C) 2021 Robert Wimmer
+# Copyright (C) 2021-2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 dependency:
@@ -10,46 +10,62 @@ driver:
   provider:
     name: libvirt
     type: libvirt
-    options:
-      memory: 384
-      cpus: 2
 
 platforms:
-  - name: test-docker-ubuntu2004
-    box: generic/ubuntu2004
+  - name: test-docker-ubuntu2204
+    box: generic/ubuntu2204
+    memory: 1024
+    cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 192.168.10.10
-  - name: test-docker-ubuntu1804
-    box: generic/ubuntu1804
+  - name: test-docker-ubuntu2004
+    box: generic/ubuntu2004
+    memory: 512
+    cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 192.168.10.20
-  - name: test-docker-debian10
-    box: generic/debian10
+  - name: test-docker-ubuntu1804
+    box: generic/ubuntu1804
+    memory: 512
+    cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 192.168.10.30
-  - name: test-docker-debian11
-    box: generic/debian11
+  - name: test-docker-debian10
+    box: generic/debian10
+    memory: 512
+    cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 192.168.10.40
-  - name: test-docker-archlinux
-    box: archlinux/archlinux
+  - name: test-docker-debian11
+    box: generic/debian11
+    memory: 512
+    cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 192.168.10.50
+  - name: test-docker-archlinux
+    box: archlinux/archlinux
+    memory: 512
+    cpus: 2
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 192.168.10.60
 
 provisioner:
   name: ansible
@@ -59,6 +75,10 @@ provisioner:
   log: true
   lint:
     name: ansible-lint
+  inventory:
+    host_vars:
+      test-docker-archlinux:
+        docker_firewall_flavor: "nftables"
 
 scenario:
   name: default
