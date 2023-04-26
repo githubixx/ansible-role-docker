@@ -1,5 +1,10 @@
 # Changelog
 
+## 10.0.0+23.0.4
+
+- update Docker to `v23.0.4`
+- fix Molecule prepare step for Archlinux
+
 ## 9.0.0+20.10.22
 
 - **BREAKING:** `dockerd_settings` now contains the default settings for `dockerd`. Previous versions had optimized settings for Kubernetes. But since Docker is no longer relevant for Kubernetes it makes sense to just use the default settings. Settings before this version:
