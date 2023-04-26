@@ -19,11 +19,15 @@
       become: true
 
     - name: Updating pacman cache
-      ansible.builtin.raw: pacman -Sy
+      raw: pacman -Sy
       become: true
 
-    - name: Install python for Ansible
-      ansible.builtin.raw: test -e /usr/bin/python || (pacman --noconfirm python)
+    - name: Install Python
+      ansible.builtin.raw: |
+        pacman -S --noconfirm python
+      args:
+        executable: /bin/bash
+      changed_when: false
       become: true
 
     - name: Upgrade the whole system
