@@ -1,7 +1,6 @@
 ---
 docker_binaries:
   - containerd
-  - containerd-shim
   - containerd-shim-runc-v2
   - ctr
   - docker
