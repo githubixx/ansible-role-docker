@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.0.0+25.0.0
+
+- update Docker to `v25.0.0`
+
 ## 10.0.0+23.0.4
 
 - update Docker to `v23.0.4`
