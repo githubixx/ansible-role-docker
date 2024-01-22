@@ -1,28 +1,18 @@
-ansible-role-docker
-===================
+# ansible-role-docker
 
 Installs Docker from official Docker binaries archive (no PPA or apt repository). For managing Docker daemon systemd is used. Should work with basically every Linux OS using `systemd`.
 
-Versions
---------
+## Versions
 
 I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `11.0.0+25.0.0` means this is release `11.0.0` of this role and it's meant to be used with Docker version `25.0.0`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
-Requirements
-------------
-
-A recent kernel should be used (something like >= 4.4.x). It makes sense to use a recent kernel for Docker in general. I recommend to use >= 4.8.x if possible. Ubuntu 18.04 and up have already a descent kernel by default. Verify that you have `overlay2` filesystem available if you want to use it instead of e.g. `aufs` which is recommended in production (should be the case for kernel >= 4.4.x). Meanwhile `aufs` is deprecated anyways. But you can change the storage driver in the `dockerd_settings_user` (see below for more information) if you like.
-
-Changelog
----------
+## Changelog
 
 see [Changelog](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
 
-Role Variables
---------------
+## Role Variables
 
 ```yaml
----
 # Directory to store downloaded Docker archive and unarchived binary files.
 docker_download_dir: "/opt/tmp"
 
@@ -90,7 +80,7 @@ docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 ```
 
 Variables with no defaults:
- 
+
 ```yaml
 # If you've a Docker registry with a self signed certificate you can copy the
 # certificate authority (CA) file to the remote host to the CA certificate store.
@@ -118,13 +108,11 @@ dockerd_settings_user:
 
 Of course you can add more settings.
 
-Upgrading Docker
----------------
+## Upgrading Docker
 
 If you want upgrade Docker update `docker_version` variable accordingly. Afterwards if you run `ansible-playbook` and supply the argument `--extra-vars="upgrade_docker=true"` the playbook will download the specified Docker version and installs the binaries. This will cause systemd to restart `docker.service`. To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` parameter or reduce parallel Ansible tasks with `--forks`.
 
-Example Playbook
-----------------
+## Example Playbook
 
 ```yaml
 - hosts: docker_hosts
@@ -132,8 +120,7 @@ Example Playbook
     - githubixx.docker
 ```
 
-Testing
--------
+## Testing
 
 This role has a small test setup that is created using [Molecule](https://github.com/ansible-community/molecule), libvirt (vagrant-libvirt) and QEMU/KVM. Please see my blog post [Testing Ansible roles with Molecule, libvirt (vagrant-libvirt) and QEMU/KVM](https://www.tauceti.blog/posts/testing-ansible-roles-with-molecule-libvirt-vagrant-qemu-kvm/) how to setup. The test configuration is [here](https://github.com/githubixx/ansible-role-docker/tree/master/molecule/default).
 
@@ -157,12 +144,10 @@ To clean up run
 molecule destroy
 ```
 
-License
--------
+## License
 
 GNU GENERAL PUBLIC LICENSE Version 3
 
-Author Information
-------------------
+## Author Information
 
 [http://www.tauceti.blog](http://www.tauceti.blog)
