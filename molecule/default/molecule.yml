@@ -21,24 +21,24 @@ platforms:
         network_name: private_network
         type: static
         ip: 172.16.10.10
-  - name: test-docker-ubuntu2004
-    box: generic/ubuntu2004
-    memory: 1536
-    cpus: 2
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 172.16.10.20
-  - name: test-docker-debian12
-    box: generic/debian12
-    memory: 1536
-    cpus: 2
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 172.16.10.40
+#  - name: test-docker-ubuntu2004
+#    box: generic/ubuntu2004
+#    memory: 1536
+#    cpus: 2
+#    interfaces:
+#      - auto_config: true
+#        network_name: private_network
+#        type: static
+#        ip: 172.16.10.20
+#  - name: test-docker-debian12
+#    box: generic/debian12
+#    memory: 1536
+#    cpus: 2
+#    interfaces:
+#      - auto_config: true
+#        network_name: private_network
+#        type: static
+#        ip: 172.16.10.40
   - name: test-docker-debian11
     box: generic/debian11
     memory: 1536
@@ -70,6 +70,8 @@ provisioner:
     host_vars:
       test-docker-archlinux:
         docker_firewall_flavor: "nftables"
+      test-docker-ubuntu2204:
+        docker_compose_type: "standalone" 
 
 scenario:
   name: default

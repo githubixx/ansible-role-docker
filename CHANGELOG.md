@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.1.0+25.0.0
+
+- add support for installing `docker-compose`
+
 ## 11.0.0+25.0.0
 
 - **BREAKING**: remove `Debian 10` and `Ubuntu 18` support

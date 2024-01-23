@@ -171,6 +171,17 @@
   tags:
     - docker
 
+- name: Install docker-compose binary
+  when:
+    - docker_compose_type is defined
+  ansible.builtin.include_tasks:
+    file: "tasks/docker-compose.yml"
+    apply:
+      tags:
+        - docker-compose
+  tags:
+    - docker-compose
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 

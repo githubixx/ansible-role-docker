@@ -1,0 +1,9 @@
+---
+- name: Downloading docker-compose binary
+  ansible.builtin.get_url:
+    url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-linux-x86_64"
+    dest: "{{ docker_compose_bin_directory }}/docker-compose"
+    mode: "{{ docker_compose_bin_file_perm }}"
+    owner: "{{ docker_compose_bin_owner }}"
+    group: "{{ docker_compose_bin_group }}"
+    checksum: "sha256:https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}//docker-compose-linux-x86_64.sha256"

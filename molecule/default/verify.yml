@@ -27,3 +27,19 @@
         return_content: true
       register: goecho
       failed_when: "'User-Agent' not in goecho.content"
+
+- name: Verify docker-compose installed
+  hosts: test-docker-ubuntu2204
+  vars:
+    docker_compose_version_output: "Docker Compose version"
+  tasks:
+    - name: Check docker-compose version output
+      ansible.builtin.command:
+        cmd: "docker-compose -v"
+      register: docker__docker_compose_version
+      changed_when: false
+
+    - name: Ensure docker-compose --version output
+      ansible.builtin.assert:
+        that:
+          - "docker_compose_version_output in docker__docker_compose_version.stdout"      
