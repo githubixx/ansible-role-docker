@@ -70,6 +70,8 @@ provisioner:
     host_vars:
       test-docker-archlinux:
         docker_firewall_flavor: "nftables"
+      test-docker-ubuntu2204:
+        docker_compose_type: "standalone" 
 
 scenario:
   name: default

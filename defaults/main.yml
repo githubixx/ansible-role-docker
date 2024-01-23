@@ -63,3 +63,25 @@ docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 # The directory where the program "update-ca-certificates" searches for CA
 # certificate files (besides other locations).
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
+
+# Currently only "standalone" is supported. So that means on the remote host
+# "docker-compose" command will be available and not the "docker compose"
+# plugin (without "-").
+# When commented no "docker-compose" will be installed and all "docker_compose_*"
+# variables are ignored.
+#docker_compose_type: "standalone"
+
+# "docker-compose" version
+docker_compose_version: "2.24.2"
+
+# The directory where to "docker-compose" binary will be installed
+docker_compose_bin_directory: "/usr/local/bin"
+
+# Owner of the "docker-compose" binary
+docker_compose_bin_owner: "root"
+
+# Group of the "docker-compose" binary
+docker_compose_bin_group: "root"
+
+# File permissions of "docker-compose" binary
+docker_compose_bin_file_perm: "0755"
