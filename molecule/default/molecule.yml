@@ -14,58 +14,49 @@ driver:
 platforms:
   - name: test-docker-ubuntu2204
     box: generic/ubuntu2204
-    memory: 1024
+    memory: 1536
     cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.10
+        ip: 172.16.10.10
   - name: test-docker-ubuntu2004
     box: generic/ubuntu2004
-    memory: 512
+    memory: 1536
     cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.20
-  - name: test-docker-ubuntu1804
-    box: generic/ubuntu1804
-    memory: 512
+        ip: 172.16.10.20
+  - name: test-docker-debian12
+    box: generic/debian12
+    memory: 1536
     cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.30
-  - name: test-docker-debian10
-    box: generic/debian10
-    memory: 512
-    cpus: 2
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 192.168.10.40
+        ip: 172.16.10.40
   - name: test-docker-debian11
     box: generic/debian11
-    memory: 512
+    memory: 1536
     cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.50
+        ip: 172.16.10.50
   - name: test-docker-archlinux
     box: archlinux/archlinux
-    memory: 512
+    memory: 1536
     cpus: 2
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.60
+        ip: 172.16.10.60
 
 provisioner:
   name: ansible
