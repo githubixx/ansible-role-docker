@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.2.0+26.1.0
+
+- update Docker to `v26.1.0`
+
 ## 11.1.0+25.0.0
 
 - add support for installing `docker-compose`
