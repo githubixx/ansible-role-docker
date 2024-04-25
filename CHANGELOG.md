@@ -3,6 +3,8 @@
 ## 11.2.0+26.1.0
 
 - update Docker to `v26.1.0`
+- update Docker compose to `v2.27.0`
+- Molecule: use `alvistack` instead of `generic` Vagrant boxes for Ubuntu
 
 ## 11.1.0+25.0.0
 
