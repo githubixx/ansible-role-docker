@@ -12,6 +12,7 @@ galaxy_info:
       versions:
         - "bionic"
         - "jammy"
+        - "noble"
     - name: Debian
       versions:
         - "bullseye"

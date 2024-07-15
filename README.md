@@ -33,7 +33,7 @@ docker_bin_dir: "/usr/local/bin"
 # 
 # Ubuntu 20.04 and Debian 10 only provides "iptables".
 #
-# Ubuntu 22.04, Debian 11 and 12 allows to install "iptables" and "nftables"
+# Ubuntu 22.04, 22.04, Debian 11 and 12 allows to install "iptables" and "nftables"
 # in parallel.
 #
 # So for Archlinux if either "iptables" or "iptables-nft" package is
