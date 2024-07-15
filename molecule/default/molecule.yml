@@ -16,6 +16,8 @@ platforms:
     box: alvistack/ubuntu-22.04
     memory: 1536
     cpus: 2
+    groups:
+      - ubuntu
     interfaces:
       - auto_config: true
         network_name: private_network
@@ -25,15 +27,30 @@ platforms:
     box: alvistack/ubuntu-20.04
     memory: 1536
     cpus: 2
+    groups:
+      - ubuntu
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 172.16.10.20
+  - name: test-docker-ubuntu2404
+    box: alvistack/ubuntu-24.04
+    memory: 1536
+    cpus: 2
+    groups:
+      - ubuntu
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 172.16.10.30
   - name: test-docker-debian12
     box: generic/debian12
     memory: 1536
     cpus: 2
+    groups:
+      - debian
     interfaces:
       - auto_config: true
         network_name: private_network
@@ -43,6 +60,8 @@ platforms:
     box: generic/debian11
     memory: 1536
     cpus: 2
+    groups:
+      - debian
     interfaces:
       - auto_config: true
         network_name: private_network
@@ -52,6 +71,8 @@ platforms:
     box: archlinux/archlinux
     memory: 1536
     cpus: 2
+    groups:
+      - archlinux
     interfaces:
       - auto_config: true
         network_name: private_network

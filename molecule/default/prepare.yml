@@ -1,15 +1,20 @@
 ---
-- name: Prepare Ubuntu 22.04
-  hosts: test-docker-ubuntu2204
+- name: Prepare Ubuntu and Debian hosts
+  hosts: ubuntu, debian
   gather_facts: false
   tasks:
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
     - name: Install python3-requests package
       ansible.builtin.package:
         name: "python3-requests"
         state: present
 
 - name: Prepare Archlinux
-  hosts: test-docker-archlinux
+  hosts: archlinux
   gather_facts: false
   tasks:
     - name: Init pacman
