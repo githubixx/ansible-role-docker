@@ -1,5 +1,12 @@
 # Changelog
 
+## 12.0.0+27.0.3
+
+- update Docker to `v27.0.3`
+- update Docker Compose to `v2.28.1`
+- add `Ubuntu 24.04` support
+- Molecule: update tests
+
 ## 11.2.0+26.1.0
 
 - update Docker to `v26.1.0`
