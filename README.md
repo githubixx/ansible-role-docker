@@ -4,7 +4,7 @@ Installs Docker from official Docker binaries archive (no PPA or apt repository)
 
 ## Versions
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `11.2.0+26.1.0` means this is release `11.2.0` of this role and it's meant to be used with Docker version `26.1.0`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `12.0.0+27.0.3` means this is release `12.0.0` of this role and it's meant to be used with Docker version `27.0.3`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
 ## Changelog
 
@@ -17,7 +17,7 @@ see [Changelog](https://github.com/githubixx/ansible-role-docker/blob/master/CHA
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "26.1.0"
+docker_version: "27.0.3"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
