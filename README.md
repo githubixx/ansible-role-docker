@@ -86,7 +86,7 @@ docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 #docker_compose_type: "standalone"
 
 # "docker-compose" version
-docker_compose_version: "2.27.0"
+docker_compose_version: "2.28.1"
 
 # The directory where to "docker-compose" binary will be installed
 docker_compose_bin_directory: "/usr/local/bin"
