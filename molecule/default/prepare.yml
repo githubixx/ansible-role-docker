@@ -29,9 +29,9 @@
         pacman -Sy
       changed_when: false
 
-    - name: Install Python
+    - name: Install support packages
       ansible.builtin.raw: |
-        pacman -S --noconfirm python openssl
+        pacman -S --noconfirm python openssl archlinux-keyring
       args:
         executable: /bin/bash
       changed_when: false
