@@ -67,7 +67,7 @@ docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 # plugin (without "-").
 # When commented no "docker-compose" will be installed and all "docker_compose_*"
 # variables are ignored.
-#docker_compose_type: "standalone"
+# docker_compose_type: "standalone"
 
 # "docker-compose" version
 docker_compose_version: "2.38.2"

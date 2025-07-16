@@ -56,7 +56,7 @@
   ansible.builtin.copy:
     src: "{{ docker_ca_certificates_src_dir }}/{{ item }}"
     dest: "{{ docker_ca_certificates_dst_dir }}/{{ item }}"
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
   with_items:
@@ -94,7 +94,7 @@
   ansible.builtin.file:
     path: "{{ docker_download_dir }}"
     state: directory
-    mode: 0750
+    mode: "0750"
   tags:
     - docker
 
@@ -109,7 +109,7 @@
   ansible.builtin.get_url:
     url: "https://download.docker.com/linux/static/stable/x86_64/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
-    mode: 0640
+    mode: "0640"
   when: not docker_bin_stat.stat.exists or (upgrade_docker is defined and upgrade_docker == "true")
   tags:
     - docker
@@ -127,7 +127,7 @@
   ansible.builtin.copy:
     src: "{{ docker_download_dir }}/docker/{{ binary }}"
     dest: "{{ docker_bin_dir }}/{{ binary }}"
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
     remote_src: true
@@ -151,7 +151,7 @@
     dest: /etc/systemd/system/docker.socket
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - Reload systemd
     - Restart docker
@@ -164,7 +164,7 @@
     dest: /etc/systemd/system/docker.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - Reload systemd
     - Restart docker
