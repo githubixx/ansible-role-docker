@@ -17,8 +17,6 @@ docker_bin_dir: "/usr/local/bin"
 # depends on "iptables" command. In case of Archlinux "nftables" also
 # includes "iptables" so both work.
 #
-# Ubuntu 20.04 and Debian 10 only provides "iptables".
-#
 # Ubuntu 22.04, 24.04 and Debian 11 allows to install "iptables" and "nftables"
 # in parallel.
 #
