@@ -3,7 +3,7 @@
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "27.0.3"
+docker_version: "28.3.2"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
