@@ -57,7 +57,7 @@ platforms:
         type: static
         ip: 172.16.10.50
   - name: test-docker-archlinux
-    box: archlinux/archlinux
+    box: generic/arch
     memory: 1536
     cpus: 2
     groups:
