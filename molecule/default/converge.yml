@@ -2,11 +2,12 @@
 # Copyright (C) 2021-2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-- hosts: all
+- name: Setup Docker
+  hosts: all
   remote_user: vagrant
   become: true
   gather_facts: true
   tasks:
     - name: Include Docker role
-      include_role:
+      ansible.builtin.include_role:
         name: githubixx.docker

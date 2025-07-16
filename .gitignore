@@ -3,3 +3,4 @@
 
 molecule/kvm/.vagrant
 .vscode
+.ansible

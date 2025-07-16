@@ -21,28 +21,22 @@
       ansible.builtin.raw: |
         pacman-key --init
         pacman-key --populate archlinux
-      become: true
+      changed_when: false
+      failed_when: false
 
     - name: Updating pacman cache
-      raw: pacman -Sy
-      become: true
-
-    - name: Install Python
       ansible.builtin.raw: |
-        pacman -S --noconfirm python
+        pacman -Sy
+      changed_when: false
+
+    - name: Install support packages
+      ansible.builtin.raw: |
+        pacman -S --noconfirm python openssl archlinux-keyring
       args:
         executable: /bin/bash
       changed_when: false
-      become: true
-
-    - name: Upgrade the whole system
-      ansible.builtin.raw: pacman --noconfirm -Su
-      become: true
 
     - name: Install python3-requests package
       ansible.builtin.package:
         name: "python-requests"
         state: present
-
-    - name: Reboot for kernel updates
-      ansible.builtin.reboot:

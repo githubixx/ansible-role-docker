@@ -42,4 +42,4 @@
     - name: Ensure docker-compose --version output
       ansible.builtin.assert:
         that:
-          - "docker_compose_version_output in docker__docker_compose_version.stdout"      
+          - "docker_compose_version_output in docker__docker_compose_version.stdout"

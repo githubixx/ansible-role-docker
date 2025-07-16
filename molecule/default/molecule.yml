@@ -23,17 +23,6 @@ platforms:
         network_name: private_network
         type: static
         ip: 172.16.10.10
-  - name: test-docker-ubuntu2004
-    box: alvistack/ubuntu-20.04
-    memory: 1536
-    cpus: 2
-    groups:
-      - ubuntu
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: static
-        ip: 172.16.10.20
   - name: test-docker-ubuntu2404
     box: alvistack/ubuntu-24.04
     memory: 1536
@@ -68,7 +57,7 @@ platforms:
         type: static
         ip: 172.16.10.50
   - name: test-docker-archlinux
-    box: archlinux/archlinux
+    box: generic/arch
     memory: 1536
     cpus: 2
     groups:
