@@ -71,7 +71,7 @@ dockerd_settings:
 ## 8.0.0+20.10.11
 
 - update Docker to `v20.10.11`
-- add support for Debain 10 (Buster) + 11 (Bullseye)
+- add support for Debian 10 (Buster) + 11 (Bullseye)
 - add support for Archlinux
 - `aufs` storage driver is deprecated -> use `overlay2` by default
 - add Molecule tests
