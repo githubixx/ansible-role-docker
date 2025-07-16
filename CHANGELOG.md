@@ -1,5 +1,24 @@
 # Changelog
 
+## 13.0.0+28.3.2
+
+- **UPDATE**
+  - update Docker to `v28.3.2`
+  - update Docker Compose to `v2.38.2`
+
+- **MOLECULE**
+  - Use `generic/arch` Vagrant box instead of `archlinux/archlinux` (no longer available)
+  - Install `openssl` package for Archlinux
+  - Install `archlinux-keyring` for Archlinux
+  - Removed Ubuntu 20.04 because reached end of life
+  - Remove `vars/ubuntu-20.yml` as Ubuntu 20.04 support was dropped
+  - Removed 'Upgrade the whole system' task
+
+- **OTHER CHANGES**
+  - update `.yamllint`
+  - fix `ansible-lint` issues
+  - add `.ansible` directory to `.gitignore`
+
 ## 12.0.0+27.0.3
 
 - update Docker to `v27.0.3`
