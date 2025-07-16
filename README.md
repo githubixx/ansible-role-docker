@@ -17,7 +17,7 @@ see [Changelog](https://github.com/githubixx/ansible-role-docker/blob/master/CHA
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "27.0.3"
+docker_version: "28.3.2"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -30,10 +30,8 @@ docker_bin_dir: "/usr/local/bin"
 # "nftables". For all other OSes "iptables" is a requirement as Docker
 # depends on "iptables" command. In case of Archlinux "nftables" also
 # includes "iptables" so both work.
-# 
-# Ubuntu 20.04 and Debian 10 only provides "iptables".
 #
-# Ubuntu 22.04, 22.04, Debian 11 and 12 allows to install "iptables" and "nftables"
+# Ubuntu 22.04, 24.04 and Debian 11 allows to install "iptables" and "nftables"
 # in parallel.
 #
 # So for Archlinux if either "iptables" or "iptables-nft" package is
@@ -83,10 +81,10 @@ docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 # plugin (without "-").
 # When commented no "docker-compose" will be installed and all "docker_compose_*"
 # variables are ignored.
-#docker_compose_type: "standalone"
+# docker_compose_type: "standalone"
 
 # "docker-compose" version
-docker_compose_version: "2.28.1"
+docker_compose_version: "2.38.2"
 
 # The directory where to "docker-compose" binary will be installed
 docker_compose_bin_directory: "/usr/local/bin"
