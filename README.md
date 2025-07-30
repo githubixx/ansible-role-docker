@@ -8,12 +8,62 @@ I tag every release and try to stay with [semantic versioning](http://semver.org
 
 ## Changelog
 
-see [Changelog](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
+**Change history:**
+
+See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
+
+**Recent changes:**
+
+### 13.1.0+28.3.2
+
+- **UPDATE**
+  - Automatically detect system type (e.g. `darwin`, `linux`, etc) and architecture types (e.g. `x86_64`, `aarch64`, `arm64`, etc (contribution by @prakasa1904)
+
+- **MOLECULE**
+  - Archlinux Vagrant box needs `nameserver` entry in `/etc/resolv.conf` to make DNS resolution work
+
+### 13.0.0+28.3.2
+
+- **UPDATE**
+  - update Docker to `v28.3.2`
+  - update Docker Compose to `v2.38.2`
+
+- **MOLECULE**
+  - Use `generic/arch` Vagrant box instead of `archlinux/archlinux` (no longer available)
+  - Install `openssl` package for Archlinux
+  - Install `archlinux-keyring` for Archlinux
+  - Removed Ubuntu 20.04 because reached end of life
+  - Remove `vars/ubuntu-20.yml` as Ubuntu 20.04 support was dropped
+  - Removed 'Upgrade the whole system' task
+
+- **OTHER CHANGES**
+  - update `.yamllint`
+  - fix `ansible-lint` issues
+  - add `.ansible` directory to `.gitignore`
+
+## Installation
+
+- Directly download from Github (Change into Ansible roles directory before cloning. You can figure out the role path by using `ansible-config dump | grep DEFAULT_ROLES_PATH` command):  
+`git clone https://github.com/githubixx/ansible-role-docker.git`
+
+- Via `ansible-galaxy` command and download directly from Ansible Galaxy:  
+`ansible-galaxy role install githubixx.docker`
+
+- Create a `requirements.yml` file with the following content (this will download the role from Github) and install with  
+`ansible-galaxy role install -r requirements.yml` (change `version` if needed):
+
+```yaml
+---
+roles:
+  - name: githubixx.docker
+    src: https://github.com/githubixx/ansible-role-docker.git
+    version: 13.1.0+28.3.2
+```
 
 ## Role Variables
 
 ```yaml
-# Directory to store downloaded Docker archive and unarchived binary files.
+# Directory to store downloaded Docker archive and unarchive binary files.
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.

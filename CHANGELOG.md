@@ -1,5 +1,13 @@
 # Changelog
 
+## 13.1.0+28.3.2
+
+- **UPDATE**
+  - Automatically detect system type (e.g. `darwin`, `linux`, etc) and architecture types (e.g. `x86_64`, `aarch64`, `arm64`, etc (contribution by @prakasa1904)
+
+- **MOLECULE**
+  - Archlinux Vagrant box needs `nameserver` entry in `/etc/resolv.conf` to make DNS resolution work
+
 ## 13.0.0+28.3.2
 
 - **UPDATE**
