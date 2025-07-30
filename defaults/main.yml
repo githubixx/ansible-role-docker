@@ -1,5 +1,5 @@
 ---
-# Directory to store downloaded Docker archive and unarchived binary files.
+# Directory to store downloaded Docker archive and unarchive binary files.
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
