@@ -40,3 +40,11 @@
       ansible.builtin.package:
         name: "python-requests"
         state: present
+
+    - name: Add nameserver entry to /etc/resolv.conf
+      ansible.builtin.lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver 127.0.0.53"
+        state: present
+        backup: yes
+        create: yes
