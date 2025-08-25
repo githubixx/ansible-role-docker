@@ -1,3 +1,5 @@
 ---
 docker_ip_nft_tables_packages:
   iptables: "iptables"
+dependency_packages:
+  - python3-apt

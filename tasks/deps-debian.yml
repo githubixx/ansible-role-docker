@@ -1,0 +1,5 @@
+---
+- name: Install prerequisite packages
+  ansible.builtin.apt:
+    name: "{{ dependency_packages }}"
+    state: present

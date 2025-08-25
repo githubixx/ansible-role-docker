@@ -16,6 +16,13 @@
   tags:
     - always
 
+- name: Print variables
+  debug:
+    msg: "{{ ansible_os_family }}"
+
+- ansible.builtin.include_tasks: deps-{{ ansible_os_family | lower }}.yml
+  when: ansible_os_family in ['RedHat', 'Debian', 'Archlinux'] # supported os family
+
 - name: Gather the package facts
   ansible.builtin.package_facts:
     manager: auto
