@@ -1,0 +1,10 @@
+---
+
+- name: Downloading docker compose plugins binary v2 and make exec
+  ansible.builtin.get_url:
+    url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-{{ ansible_system | lower }}-{{ ansible_architecture }}"
+    dest: "/usr/local/lib/docker/cli-plugins/docker-compose"
+    mode: "{{ docker_compose_bin_file_perm }}"
+    owner: "{{ docker_compose_bin_owner }}"
+    group: "{{ docker_compose_bin_group }}"
+    checksum: "sha256:https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-{{ ansible_system | lower }}-{{ ansible_architecture }}.sha256"

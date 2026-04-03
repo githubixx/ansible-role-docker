@@ -62,15 +62,14 @@ docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 # certificate files (besides other locations).
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 
-# Currently only "standalone" is supported. So that means on the remote host
-# "docker-compose" command will be available and not the "docker compose"
-# plugin (without "-").
-# When commented no "docker-compose" will be installed and all "docker_compose_*"
-# variables are ignored.
-# docker_compose_type: "standalone"
+# 2 kind of compose installation are supported (standalone to support legacy environments):
+# - standalone: The standalone "docker-compose" binary. This is the old way to use "docker-compose". The binary is called "docker-compose" and is installed in a directory defined by `docker_compose_bin_directory` variable. This is the default value for `docker_compose_type` variable.
+# - plugin: The "docker compose" plugin for "docker" CLI. This is the new way to use "docker-compose". The binary is called "docker-compose" and is installed in "/usr/local/lib/docker/cli-plugins/docker-compose". This is the recommended way to use "docker-compose" and is the default value for `docker_compose_type` variable.
+# When commented no "docker-compose" will be installed and all "docker_compose_*" variables will be ignored.
+docker_compose_type: "plugin"
 
 # "docker-compose" version
-docker_compose_version: "2.38.2"
+docker_compose_version: "5.1.1"
 
 # The directory where to "docker-compose" binary will be installed
 docker_compose_bin_directory: "/usr/local/bin"
