@@ -1,0 +1,4 @@
+- name: Install prerequisite packages
+  ansible.builtin.package:
+    name: "{{ dependency_packages }}"
+    state: present
