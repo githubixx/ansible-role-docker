@@ -8,13 +8,27 @@
 - name: Load required variables based on the OS type
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release }}.yml"
-    - "{{ ansible_distribution | lower }}.yml"
-    - "{{ ansible_os_family | lower }}.yml"
+    - "{{ ansible_facts['distribution'] | lower }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ ansible_facts['distribution'] | lower }}-{{ ansible_facts['distribution_version'] }}.yml"
+    - "{{ ansible_facts['distribution'] | lower }}-{{ ansible_facts['distribution_release'] }}.yml"
+    - "{{ ansible_facts['distribution'] | lower }}.yml"
+    - "{{ ansible_facts['os_family'] | lower }}.yml"
   tags:
     - always
+
+- name: Bootstrap python3-apt on Debian family hosts
+  when:
+    - ansible_facts['os_family'] == "Debian"
+  ansible.builtin.raw: |
+    if python3 -c 'import apt' >/dev/null 2>&1; then
+      echo "python3-apt already present"
+    else
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y python3-apt
+    fi
+  register: docker__python3_apt_bootstrap
+  changed_when: "'python3-apt already present' not in docker__python3_apt_bootstrap.stdout"
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
@@ -52,6 +66,29 @@
     name: "{{ docker_ip_nft_tables_packages.nftables }}"
     state: present
 
+- name: Persist Docker kernel modules
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/docker.conf
+    content: |
+      {% for docker__kernel_module in docker_kernel_modules %}
+      {{ docker__kernel_module }}
+      {% endfor %}
+    owner: root
+    group: root
+    mode: "0644"
+  tags:
+    - docker
+
+- name: Load Docker kernel modules
+  ansible.builtin.command:
+    cmd: "modprobe {{ docker__kernel_module }}"
+  loop: "{{ docker_kernel_modules }}"
+  loop_control:
+    loop_var: docker__kernel_module
+  changed_when: false
+  tags:
+    - docker
+
 - name: Copy certificates for Docker registries (if provided)
   ansible.builtin.copy:
     src: "{{ docker_ca_certificates_src_dir }}/{{ item }}"
@@ -68,6 +105,8 @@
 
 - name: Update CA certificates
   ansible.builtin.command: "update-ca-certificates"
+  register: docker__update_ca_certificates
+  changed_when: "'0 added, 0 removed; done.' not in docker__update_ca_certificates.stdout"
   when: docker_ca_certificates is defined
   tags:
     - docker
@@ -105,12 +144,40 @@
   tags:
     - docker
 
+- name: Register installed Docker CLI version
+  when: docker_bin_stat.stat.exists
+  ansible.builtin.command:
+    cmd: "{{ docker_bin_dir }}/docker --version"
+  register: docker__docker_cli_version
+  changed_when: false
+  tags:
+    - docker
+
+- name: Register if Docker binaries need installation
+  ansible.builtin.set_fact:
+    docker__install_binaries: >-
+      {{
+        (not docker_bin_stat.stat.exists)
+        or (upgrade_docker | default(false) | bool)
+        or (
+          (
+            docker__docker_cli_version.stdout
+            | default('')
+            | regex_findall('[0-9]+\.[0-9]+\.[0-9]+')
+            | first
+            | default('')
+          ) != docker_version
+        )
+      }}
+  tags:
+    - docker
+
 - name: Downloading official Docker binaries archive
   ansible.builtin.get_url:
-    url: "https://download.docker.com/linux/static/stable/{{ ansible_architecture }}/docker-{{ docker_version }}.tgz"
+    url: "https://download.docker.com/linux/static/stable/{{ ansible_facts['architecture'] }}/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
     mode: "0640"
-  when: not docker_bin_stat.stat.exists or (upgrade_docker is defined and upgrade_docker == "true")
+  when: docker__install_binaries
   tags:
     - docker
 
@@ -119,7 +186,7 @@
     src: "{{ docker_download_dir }}/docker-{{ docker_version }}.tgz"
     dest: "{{ docker_download_dir }}"
     remote_src: true
-  when: not docker_bin_stat.stat.exists or (upgrade_docker is defined and upgrade_docker == "true")
+  when: docker__install_binaries
   tags:
     - docker
 
@@ -136,6 +203,7 @@
   loop: "{{ docker_binaries }}"
   loop_control:
     loop_var: "binary"
+  when: docker__install_binaries
   tags:
     - docker
 
