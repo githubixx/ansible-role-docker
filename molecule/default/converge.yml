@@ -8,6 +8,14 @@
   become: true
   gather_facts: true
   tasks:
+    - name: Remove python3-apt on Debian family hosts
+      when:
+        - ansible_facts['os_family'] == "Debian"
+      ansible.builtin.raw: |
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get remove -y python3-apt || true
+      changed_when: false
+
     - name: Include Docker role
       ansible.builtin.include_role:
         name: githubixx.docker

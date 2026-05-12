@@ -33,6 +33,17 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
+        ip: 172.16.10.20
+  - name: test-docker-ubuntu2604
+    box: githubixx/ubuntu-26.04
+    memory: 1536
+    cpus: 2
+    groups:
+      - ubuntu
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
         ip: 172.16.10.30
   - name: test-docker-debian12
     box: githubixx/debian-12

@@ -5,28 +5,50 @@
 - name: Verify setup
   hosts: all
   tasks:
+    - name: Remove legacy verify containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - nginx
+        - docker-bridge-diagnostic
+        - docker-verify-http
+
     - name: Pull image
       community.docker.docker_image:
-        name: xperimental/goecho
-        tag: v1.8
+        name: busybox
+        tag: stable
         source: pull
-        pull:
-          platform: amd64
 
     - name: Start container
       community.docker.docker_container:
-        name: goecho
-        image: xperimental/goecho:v1.8
+        name: docker-verify-http
+        image: busybox:stable
         state: started
-        ports:
+        recreate: true
+        published_ports:
           - "8080:8080"
+        command:
+          - sh
+          - -c
+          - "mkdir -p /www && printf 'docker-role-ok\n' >/www/index.html && exec httpd -f -p 8080 -h /www"
 
-    - name: Check goecho output
+    - name: Wait for test HTTP port
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 8080
+        timeout: 30
+
+    - name: Check HTTP output
       ansible.builtin.uri:
         url: http://localhost:8080
         return_content: true
-      register: goecho
-      failed_when: "'User-Agent' not in goecho.content"
+      register: docker__http
+      retries: 5
+      delay: 2
+      until:
+        - docker__http.status == 200
+        - "'docker-role-ok' in docker__http.content"
 
 - name: Verify docker-compose installed
   hosts: test-docker-ubuntu2204
