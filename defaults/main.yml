@@ -3,7 +3,7 @@
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "28.3.2"
+docker_version: "29.4.3"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -11,6 +11,13 @@ docker_gid: 666
 
 # Directory to store Docker binaries. Should be in your search PATH!
 docker_bin_dir: "/usr/local/bin"
+
+# Kernel modules required for Docker bridge networking on minimal hosts.
+docker_kernel_modules:
+  - overlay
+  - br_netfilter
+  - bridge
+  - veth
 
 # For Archlinux the values of this variable can either be "iptables" or
 # "nftables". For all other OSes "iptables" is a requirement as Docker
