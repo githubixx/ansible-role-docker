@@ -1,5 +1,27 @@
 # Changelog
 
+## 14.0.0+29.4.3
+
+- **BREAKING**
+  - remove `Debian 11` support
+
+- **UPDATE**
+  - update Docker to `v29.4.3`
+  - add `Ubuntu 26.04` support
+  - add `Debian 13` support
+  - update `docker-compose` binary only when needed
+  - ensure needed kernel modules for Docker are loaded
+  - ensure python3-apt installed on Archlinux + Debian based OSes
+
+- **MOLECULE**
+  - use own [githubixx Vagrant boxes](https://portal.cloud.hashicorp.com/vagrant/discover/githubixx)
+  - update tests
+
+- **OTHER CHANGES**
+  - update `.yamllint`
+  - truthy value should be "true" / fix file permissions
+  - fix line length in `.github/workflows/release.yml`
+
 ## 13.1.0+28.3.2
 
 - **UPDATE**
