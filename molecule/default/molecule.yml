@@ -13,7 +13,7 @@ driver:
 
 platforms:
   - name: test-docker-ubuntu2204
-    box: alvistack/ubuntu-22.04
+    box: githubixx/ubuntu-22.04
     memory: 1536
     cpus: 2
     groups:
@@ -24,7 +24,18 @@ platforms:
         type: static
         ip: 172.16.10.10
   - name: test-docker-ubuntu2404
-    box: alvistack/ubuntu-24.04
+    box: githubixx/ubuntu-24.04
+    memory: 1536
+    cpus: 2
+    groups:
+      - ubuntu
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 172.16.10.20
+  - name: test-docker-ubuntu2604
+    box: githubixx/ubuntu-26.04
     memory: 1536
     cpus: 2
     groups:
@@ -35,7 +46,7 @@ platforms:
         type: static
         ip: 172.16.10.30
   - name: test-docker-debian12
-    box: generic/debian12
+    box: githubixx/debian-12
     memory: 1536
     cpus: 2
     groups:
@@ -45,8 +56,8 @@ platforms:
         network_name: private_network
         type: static
         ip: 172.16.10.40
-  - name: test-docker-debian11
-    box: generic/debian11
+  - name: test-docker-debian13
+    box: githubixx/debian-13
     memory: 1536
     cpus: 2
     groups:
@@ -57,7 +68,7 @@ platforms:
         type: static
         ip: 172.16.10.50
   - name: test-docker-archlinux
-    box: generic/arch
+    box: githubixx/archlinux
     memory: 1536
     cpus: 2
     groups:

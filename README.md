@@ -4,7 +4,7 @@ Installs Docker from official Docker binaries archive (no PPA or apt repository)
 
 ## Versions
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `13.0.0+28.3.2` means this is release `13.0.0` of this role and it's meant to be used with Docker version `28.3.2`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag like `13.0.0+29.4.3` means this is release `13.0.0` of this role and it's meant to be used with Docker version `29.4.3`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
 ## Changelog
 
@@ -13,6 +13,28 @@ I tag every release and try to stay with [semantic versioning](http://semver.org
 See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
 
 **Recent changes:**
+
+### 14.0.0+29.4.3
+
+- **BREAKING**
+  - remove `Debian 11` support
+
+- **UPDATE**
+  - update Docker to `v29.4.3`
+  - add `Ubuntu 26.04` support
+  - add `Debian 13` support
+  - update `docker-compose` binary only when needed
+  - ensure needed kernel modules for Docker are loaded
+  - ensure python3-apt installed on Archlinux + Debian based OSes
+
+- **MOLECULE**
+  - use own [githubixx Vagrant boxes](https://portal.cloud.hashicorp.com/vagrant/discover/githubixx)
+  - update tests
+
+- **OTHER CHANGES**
+  - update `.yamllint`
+  - truthy value should be "true" / fix file permissions
+  - fix line length in `.github/workflows/release.yml`
 
 ### 13.1.0+28.3.2
 
@@ -57,7 +79,7 @@ See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/maste
 roles:
   - name: githubixx.docker
     src: https://github.com/githubixx/ansible-role-docker.git
-    version: 13.1.0+28.3.2
+    version: 14.0.0+29.4.3
 ```
 
 ## Role Variables
@@ -67,7 +89,7 @@ roles:
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "28.3.2"
+docker_version: "29.4.3"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -75,6 +97,13 @@ docker_gid: 666
 
 # Directory to store Docker binaries. Should be in your search PATH!
 docker_bin_dir: "/usr/local/bin"
+
+# Kernel modules required for Docker bridge networking on minimal hosts.
+docker_kernel_modules:
+  - overlay
+  - br_netfilter
+  - bridge
+  - veth
 
 # For Archlinux the values of this variable can either be "iptables" or
 # "nftables". For all other OSes "iptables" is a requirement as Docker
@@ -180,7 +209,11 @@ Of course you can add more settings.
 
 ## Upgrading Docker
 
-If you want upgrade Docker update `docker_version` variable accordingly. Afterwards if you run `ansible-playbook` and supply the argument `--extra-vars="upgrade_docker=true"` the playbook will download the specified Docker version and installs the binaries. This will cause systemd to restart `docker.service`. To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` parameter or reduce parallel Ansible tasks with `--forks`.
+If you want to upgrade Docker update `docker_version` accordingly and run `ansible-playbook`. The role compares the installed Docker version with `docker_version` and downloads or reinstalls the binaries when the versions differ. This causes systemd to restart `docker.service`.
+
+You can still use `--extra-vars="upgrade_docker=true"` to force a reinstall even if the installed version already matches `docker_version`. The same flag also forces a reinstall of the standalone `docker-compose` binary when enabled.
+
+To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` or reduce parallel Ansible tasks with `--forks`.
 
 ## Example Playbook
 
@@ -192,7 +225,7 @@ If you want upgrade Docker update `docker_version` variable accordingly. Afterwa
 
 ## Testing
 
-This role has a small test setup that is created using [Molecule](https://github.com/ansible-community/molecule), libvirt (vagrant-libvirt) and QEMU/KVM. Please see my blog post [Testing Ansible roles with Molecule, libvirt (vagrant-libvirt) and QEMU/KVM](https://www.tauceti.blog/posts/testing-ansible-roles-with-molecule-libvirt-vagrant-qemu-kvm/) how to setup. The test configuration is [here](https://github.com/githubixx/ansible-role-docker/tree/master/molecule/default).
+This role has a small test setup that is created using [Molecule](https://github.com/ansible-community/molecule), libvirt (vagrant-libvirt) and QEMU/KVM. Please see my blog post [Testing Ansible roles with Molecule, libvirt (vagrant-libvirt) and QEMU/KVM](https://www.tauceti.blog/posts/testing-ansible-roles-with-molecule-libvirt-vagrant-qemu-kvm/) how to setup. The [Molecule test configuration](https://github.com/githubixx/ansible-role-docker/tree/master/molecule/default) is available in this repository.
 
 Afterwards molecule can be executed:
 
