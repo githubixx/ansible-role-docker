@@ -209,7 +209,11 @@ Of course you can add more settings.
 
 ## Upgrading Docker
 
-If you want upgrade Docker update `docker_version` variable accordingly. Afterwards if you run `ansible-playbook` and supply the argument `--extra-vars="upgrade_docker=true"` the playbook will download the specified Docker version and installs the binaries. This will cause systemd to restart `docker.service`. To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` parameter or reduce parallel Ansible tasks with `--forks`.
+If you want to upgrade Docker update `docker_version` accordingly and run `ansible-playbook`. The role compares the installed Docker version with `docker_version` and downloads or reinstalls the binaries when the versions differ. This causes systemd to restart `docker.service`.
+
+You can still use `--extra-vars="upgrade_docker=true"` to force a reinstall even if the installed version already matches `docker_version`. The same flag also forces a reinstall of the standalone `docker-compose` binary when enabled.
+
+To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` or reduce parallel Ansible tasks with `--forks`.
 
 ## Example Playbook
 

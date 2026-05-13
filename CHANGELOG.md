@@ -4,6 +4,7 @@
 
 - **BREAKING**
   - remove `Debian 11` support
+  - changing `docker_version` or `docker_compose_version` now automatically updates the installed binaries on the next run; `upgrade_docker=true` is no longer required for version-driven upgrades and now acts as a force-reinstall flag
 
 - **UPDATE**
   - update Docker to `v29.4.3`
