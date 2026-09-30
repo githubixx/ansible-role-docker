@@ -4,34 +4,67 @@
 
 - name: Verify setup
   hosts: all
+  vars:
+    docker_verify_bin_dir: /usr/local/bin
   tasks:
-    - name: Remove legacy verify containers
-      community.docker.docker_container:
-        name: "{{ item }}"
-        state: absent
-      loop:
-        - nginx
-        - docker-bridge-diagnostic
-        - docker-verify-http
+    - name: Gather service facts
+      ansible.builtin.service_facts:
 
-    - name: Pull image
-      community.docker.docker_image:
-        name: busybox
-        tag: stable
-        source: pull
+    - name: Check Docker service is running
+      ansible.builtin.assert:
+        that:
+          - "ansible_facts.services['docker.service'].state == 'running'"
 
-    - name: Start container
-      community.docker.docker_container:
-        name: docker-verify-http
-        image: busybox:stable
-        state: started
-        recreate: true
-        published_ports:
-          - "8080:8080"
-        command:
-          - sh
-          - -c
-          - "mkdir -p /www && printf 'docker-role-ok\n' >/www/index.html && exec httpd -f -p 8080 -h /www"
+    - name: Check Docker socket exists
+      ansible.builtin.stat:
+        path: /run/docker.sock
+      register: docker__socket
+
+    - name: Ensure Docker socket exists
+      ansible.builtin.assert:
+        that:
+          - docker__socket.stat.issock | default(false)
+
+    - name: Get Docker client and server versions
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/docker version --format json"
+      register: docker__version
+      changed_when: false
+
+    - name: Ensure Docker client and server are version 29.8.1
+      ansible.builtin.assert:
+        that:
+          - "(docker__version.stdout | from_json).Client.Version == '29.8.1'"
+          - "(docker__version.stdout | from_json).Server.Version == '29.8.1'"
+
+    - name: Get containerd version
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/containerd --version"
+      register: docker__containerd_version
+      changed_when: false
+
+    - name: Get runc version
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/runc --version"
+      register: docker__runc_version
+      changed_when: false
+
+    - name: Ensure bundled runtime versions
+      ansible.builtin.assert:
+        that:
+          - "'2.3.5' in docker__containerd_version.stdout"
+          - "'runc version 1.5.1' in docker__runc_version.stdout"
+
+    - name: Get Docker storage driver
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/docker info --format json"
+      register: docker__info
+      changed_when: false
+
+    - name: Ensure Docker uses overlay2
+      ansible.builtin.assert:
+        that:
+          - "(docker__info.stdout | from_json).Driver == 'overlay2'"
 
     - name: Wait for test HTTP port
       ansible.builtin.wait_for:

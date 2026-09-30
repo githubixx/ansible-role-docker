@@ -97,8 +97,11 @@ provisioner:
 scenario:
   name: default
   test_sequence:
+    - create
     - prepare
     - converge
+    - idempotence
+    - verify
 
 verifier:
   name: ansible
