@@ -4,7 +4,7 @@ Installs Docker from official Docker binaries archive (no PPA or apt repository)
 
 ## Versions
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag like `13.0.0+29.4.3` means this is release `13.0.0` of this role and it's meant to be used with Docker version `29.4.3`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag like `14.1.0+29.8.1` means this is release `14.1.0` of this role and it's meant to be used with Docker version `29.8.1`. If the role itself changes `X.Y.Z` before `+` will increase. If the Docker version changes `XX.YY.ZZ` after `+` will increase. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Docker release.
 
 ## Changelog
 
@@ -13,6 +13,14 @@ I tag every release and try to stay with [semantic versioning](http://semver.org
 See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/master/CHANGELOG.md)
 
 **Recent changes:**
+
+### 14.1.0+29.8.1
+
+- **UPDATE**
+  - update Docker to `v29.8.1` (including bundled containerd `v2.3.5` and runc `v1.5.1`)
+
+- **MOLECULE**
+  - run Molecule idempotence and read-only verification by default
 
 ### 14.0.0+29.4.3
 
@@ -79,7 +87,7 @@ See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/maste
 roles:
   - name: githubixx.docker
     src: https://github.com/githubixx/ansible-role-docker.git
-    version: 14.0.0+29.4.3
+    version: 14.1.0+29.8.1
 ```
 
 ## Role Variables
@@ -89,7 +97,7 @@ roles:
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "29.4.3"
+docker_version: "29.8.1"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -230,10 +238,10 @@ This role has a small test setup that is created using [Molecule](https://github
 Afterwards molecule can be executed:
 
 ```bash
-molecule converge
+molecule test
 ```
 
-This will setup a few virtual machines (VM) with different supported Linux operating systems and installs `docker` role.
+This will set up virtual machines (VMs) with different supported Linux operating systems, install the `docker` role, check idempotence, and verify Docker's operation.
 
 To run a few tests:
 

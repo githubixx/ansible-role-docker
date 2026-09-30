@@ -1,5 +1,13 @@
 # Changelog
 
+## 14.1.0+29.8.1
+
+- **UPDATE**
+  - update Docker to `v29.8.1` (including bundled containerd `v2.3.5` and runc `v1.5.1`)
+
+- **MOLECULE**
+  - run Molecule idempotence and read-only verification by default
+
 ## 14.0.0+29.4.3
 
 - **BREAKING**
