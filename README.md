@@ -118,7 +118,7 @@ docker_kernel_modules:
 # depends on "iptables" command. In case of Archlinux "nftables" also
 # includes "iptables" so both work.
 #
-# Ubuntu 22.04, 24.04 and Debian 11 allows to install "iptables" and "nftables"
+# Ubuntu 22.04 and 24.04 allows to install "iptables" and "nftables"
 # in parallel.
 #
 # So for Archlinux if either "iptables" or "iptables-nft" package is
