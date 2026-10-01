@@ -13,6 +13,12 @@
         name: "python3-requests"
         state: present
 
+    - name: Remove python3-apt to test role bootstrap
+      ansible.builtin.raw: |
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get remove -y python3-apt || true
+      changed_when: false
+
 - name: Prepare Archlinux
   hosts: archlinux
   gather_facts: false

@@ -3,7 +3,7 @@
 docker_download_dir: "/opt/tmp"
 
 # Docker version to download and use.
-docker_version: "29.4.3"
+docker_version: "29.8.1"
 docker_user: "docker"
 docker_group: "docker"
 docker_uid: 666
@@ -24,7 +24,7 @@ docker_kernel_modules:
 # depends on "iptables" command. In case of Archlinux "nftables" also
 # includes "iptables" so both work.
 #
-# Ubuntu 22.04, 24.04 and Debian 11 allows to install "iptables" and "nftables"
+# Ubuntu 22.04 and 24.04 allows to install "iptables" and "nftables"
 # in parallel.
 #
 # So for Archlinux if either "iptables" or "iptables-nft" package is
@@ -69,18 +69,19 @@ docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 # certificate files (besides other locations).
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 
-# Currently only "standalone" is supported. So that means on the remote host
-# "docker-compose" command will be available and not the "docker compose"
-# plugin (without "-").
-# When commented no "docker-compose" will be installed and all "docker_compose_*"
-# variables are ignored.
+# Set to "standalone" for the docker-compose command, "plugin" for the
+# docker compose CLI plugin, or "both" to install both commands.
+# When unset, neither form of Compose is installed.
 # docker_compose_type: "standalone"
 
-# "docker-compose" version
-docker_compose_version: "2.38.2"
+# Docker Compose version for either installation type
+docker_compose_version: "5.5.1"
 
-# The directory where to "docker-compose" binary will be installed
+# Directory for the standalone docker-compose binary
 docker_compose_bin_directory: "/usr/local/bin"
+
+# Directory for the system-wide Docker CLI plugin
+docker_compose_plugin_directory: "/usr/local/lib/docker/cli-plugins"
 
 # Owner of the "docker-compose" binary
 docker_compose_bin_owner: "root"

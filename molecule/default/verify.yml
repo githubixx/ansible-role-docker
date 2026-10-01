@@ -4,34 +4,67 @@
 
 - name: Verify setup
   hosts: all
+  vars:
+    docker_verify_bin_dir: /usr/local/bin
   tasks:
-    - name: Remove legacy verify containers
-      community.docker.docker_container:
-        name: "{{ item }}"
-        state: absent
-      loop:
-        - nginx
-        - docker-bridge-diagnostic
-        - docker-verify-http
+    - name: Gather service facts
+      ansible.builtin.service_facts:
 
-    - name: Pull image
-      community.docker.docker_image:
-        name: busybox
-        tag: stable
-        source: pull
+    - name: Check Docker service is running
+      ansible.builtin.assert:
+        that:
+          - "ansible_facts.services['docker.service'].state == 'running'"
 
-    - name: Start container
-      community.docker.docker_container:
-        name: docker-verify-http
-        image: busybox:stable
-        state: started
-        recreate: true
-        published_ports:
-          - "8080:8080"
-        command:
-          - sh
-          - -c
-          - "mkdir -p /www && printf 'docker-role-ok\n' >/www/index.html && exec httpd -f -p 8080 -h /www"
+    - name: Check Docker socket exists
+      ansible.builtin.stat:
+        path: /run/docker.sock
+      register: docker__socket
+
+    - name: Ensure Docker socket exists
+      ansible.builtin.assert:
+        that:
+          - docker__socket.stat.issock | default(false)
+
+    - name: Get Docker client and server versions
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/docker version --format json"
+      register: docker__version
+      changed_when: false
+
+    - name: Ensure Docker client and server are version 29.8.1
+      ansible.builtin.assert:
+        that:
+          - "(docker__version.stdout | from_json).Client.Version == '29.8.1'"
+          - "(docker__version.stdout | from_json).Server.Version == '29.8.1'"
+
+    - name: Get containerd version
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/containerd --version"
+      register: docker__containerd_version
+      changed_when: false
+
+    - name: Get runc version
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/runc --version"
+      register: docker__runc_version
+      changed_when: false
+
+    - name: Ensure bundled runtime versions
+      ansible.builtin.assert:
+        that:
+          - "'2.3.5' in docker__containerd_version.stdout"
+          - "'runc version 1.5.1' in docker__runc_version.stdout"
+
+    - name: Get Docker storage driver
+      ansible.builtin.command:
+        cmd: "{{ docker_verify_bin_dir }}/docker info --format json"
+      register: docker__info
+      changed_when: false
+
+    - name: Ensure Docker uses overlay2
+      ansible.builtin.assert:
+        that:
+          - "(docker__info.stdout | from_json).Driver == 'overlay2'"
 
     - name: Wait for test HTTP port
       ansible.builtin.wait_for:
@@ -50,18 +83,85 @@
         - docker__http.status == 200
         - "'docker-role-ok' in docker__http.content"
 
-- name: Verify docker-compose installed
-  hosts: test-docker-ubuntu2204
+- name: Verify standalone Docker Compose
+  hosts: test-docker-ubuntu2204:test-docker-ubuntu2604
   vars:
-    docker_compose_version_output: "Docker Compose version"
+    docker_verify_compose_version: "5.5.1"
   tasks:
-    - name: Check docker-compose version output
-      ansible.builtin.command:
-        cmd: "docker-compose -v"
-      register: docker__docker_compose_version
-      changed_when: false
+    - name: Check standalone Compose binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/docker-compose
+      register: docker__standalone_compose
 
-    - name: Ensure docker-compose --version output
+    - name: Ensure standalone Compose binary is executable
       ansible.builtin.assert:
         that:
-          - "docker_compose_version_output in docker__docker_compose_version.stdout"
+          - docker__standalone_compose.stat.isreg | default(false)
+          - docker__standalone_compose.stat.mode == '0755'
+          - docker__standalone_compose.stat.pw_name == 'root'
+          - docker__standalone_compose.stat.gr_name == 'root'
+
+    - name: Get standalone Compose version
+      ansible.builtin.command:
+        cmd: /usr/local/bin/docker-compose version --short
+      register: docker__standalone_compose_version
+      changed_when: false
+
+    - name: Ensure standalone Compose version
+      ansible.builtin.assert:
+        that:
+          - docker__standalone_compose_version.stdout | trim == docker_verify_compose_version
+
+- name: Verify Docker Compose CLI plugin
+  hosts: test-docker-ubuntu2404:test-docker-ubuntu2604
+  vars:
+    docker_verify_compose_version: "5.5.1"
+  tasks:
+    - name: Check Compose plugin binary
+      ansible.builtin.stat:
+        path: /usr/local/lib/docker/cli-plugins/docker-compose
+      register: docker__compose_plugin
+
+    - name: Ensure Compose plugin binary is executable
+      ansible.builtin.assert:
+        that:
+          - docker__compose_plugin.stat.isreg | default(false)
+          - docker__compose_plugin.stat.mode == '0755'
+          - docker__compose_plugin.stat.pw_name == 'root'
+          - docker__compose_plugin.stat.gr_name == 'root'
+
+    - name: Get Compose CLI plugin version
+      ansible.builtin.command:
+        cmd: /usr/local/bin/docker compose version --short
+      register: docker__compose_plugin_version
+      changed_when: false
+
+    - name: Ensure Docker CLI discovers the Compose plugin
+      ansible.builtin.assert:
+        that:
+          - docker__compose_plugin_version.stdout | trim == docker_verify_compose_version
+
+- name: Verify unselected Compose paths on fresh hosts
+  hosts: test-docker-ubuntu2204:test-docker-ubuntu2404:debian:archlinux
+  tasks:
+    - name: Check unselected Compose binary
+      ansible.builtin.stat:
+        path: "{{ '/usr/local/lib/docker/cli-plugins' if inventory_hostname == 'test-docker-ubuntu2204' else '/usr/local/bin' }}/docker-compose"
+      register: docker__unselected_compose
+
+    - name: Ensure no Compose binary was installed at the unselected path
+      ansible.builtin.assert:
+        that:
+          - not docker__unselected_compose.stat.exists
+
+    - name: Check plugin path on hosts with Compose disabled
+      when: docker_compose_type is not defined
+      ansible.builtin.stat:
+        path: /usr/local/lib/docker/cli-plugins/docker-compose
+      register: docker__disabled_compose_plugin
+
+    - name: Ensure no Compose plugin was installed on disabled hosts
+      when: docker_compose_type is not defined
+      ansible.builtin.assert:
+        that:
+          - not docker__disabled_compose_plugin.stat.exists

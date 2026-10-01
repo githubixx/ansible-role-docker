@@ -1,5 +1,17 @@
 # Changelog
 
+## 14.1.0+29.8.1
+
+- **UPDATE**
+  - update Docker to `v29.8.1` (including bundled containerd `v2.3.5` and runc `v1.5.1`)
+  - update Docker Compose to `v5.5.1`
+  - add opt-in Compose CLI plugin and `both` mode while keeping Compose disabled by default
+  - preserve standalone installation settings and leave existing binaries in place when changing modes
+
+- **MOLECULE**
+  - run Molecule idempotence and read-only verification by default
+  - verify standalone, plugin, both and disabled Compose modes
+
 ## 14.0.0+29.4.3
 
 - **BREAKING**
