@@ -239,11 +239,20 @@
   tags:
     - docker
 
-- name: Install docker-compose binary
+- name: Validate Docker Compose installation type
+  when: docker_compose_type is defined
+  ansible.builtin.assert:
+    that:
+      - docker_compose_type in ['standalone', 'plugin', 'both']
+    fail_msg: "docker_compose_type must be standalone, plugin, or both"
+  tags:
+    - docker-compose
+
+- name: Install Docker Compose
   when:
     - docker_compose_type is defined
   ansible.builtin.include_tasks:
-    file: "tasks/docker-compose.yml"
+    file: "tasks/docker-compose-tasks.yml"
     apply:
       tags:
         - docker-compose

@@ -18,6 +18,8 @@ See full [CHANGELOG](https://github.com/githubixx/ansible-role-docker/blob/maste
 
 - **UPDATE**
   - update Docker to `v29.8.1` (including bundled containerd `v2.3.5` and runc `v1.5.1`)
+  - update Docker Compose to `v5.5.1`
+  - add opt-in Docker Compose CLI plugin and simultaneous standalone/plugin installation
 
 - **MOLECULE**
   - run Molecule idempotence and read-only verification by default
@@ -163,18 +165,19 @@ docker_ca_certificates_src_dir: "{{ '~/docker-ca-certificates' | expanduser }}"
 # certificate files (besides other locations).
 docker_ca_certificates_dst_dir: "/usr/local/share/ca-certificates"
 
-# Currently only "standalone" is supported. So that means on the remote host
-# "docker-compose" command will be available and not the "docker compose"
-# plugin (without "-").
-# When commented no "docker-compose" will be installed and all "docker_compose_*"
-# variables are ignored.
+# Set to "standalone" for the docker-compose command, "plugin" for the
+# docker compose CLI plugin, or "both" to install both commands.
+# When unset, neither form of Compose is installed.
 # docker_compose_type: "standalone"
 
-# "docker-compose" version
-docker_compose_version: "2.38.2"
+# Docker Compose version for either installation type
+docker_compose_version: "5.5.1"
 
-# The directory where to "docker-compose" binary will be installed
+# Directory for the standalone docker-compose binary
 docker_compose_bin_directory: "/usr/local/bin"
+
+# Directory for the system-wide Docker CLI plugin
+docker_compose_plugin_directory: "/usr/local/lib/docker/cli-plugins"
 
 # Owner of the "docker-compose" binary
 docker_compose_bin_owner: "root"
@@ -201,6 +204,20 @@ docker_ca_certificates:
   - ca-docker.crt
 ```
 
+## Docker Compose
+
+Docker Compose is not installed unless `docker_compose_type` is set. Choose one of:
+
+| Value | Command | Installed binary |
+| --- | --- | --- |
+| `standalone` | `docker-compose` | `{{ docker_compose_bin_directory }}/docker-compose` |
+| `plugin` | `docker compose` | `{{ docker_compose_plugin_directory }}/docker-compose` |
+| `both` | Both commands | Both paths |
+
+For example, set `docker_compose_type: "plugin"` to enable the Docker CLI plugin for all users, or `docker_compose_type: "both"` to keep scripts using the standalone command working while also enabling the plugin. The standalone destination remains `/usr/local/bin`; the plugin defaults to `/usr/local/lib/docker/cli-plugins`. Both forms use `docker_compose_version` and the existing binary owner, group, and permissions settings. The role downloads release binaries with upstream SHA-256 checksums and updates each selected installation when its version differs.
+
+Changing the mode or unsetting it does not remove a binary installed previously at the other path. Upgrading an opted-in host from Compose 2 to the new Compose 5 default is a major-version change; pin `docker_compose_version` to the previous release if necessary.
+
 The settings for `dockerd` daemon defined in `dockerd_settings` can be overridden by defining a variable called `dockerd_settings_user`. You can also add additional settings by using this variable. E.g. if you add the following variables and their values to `group_vars/all.yml` (or where ever it fit's best for you) `dockerd` the default settings will be overridden (see above):
 
 ```yaml
@@ -219,7 +236,7 @@ Of course you can add more settings.
 
 If you want to upgrade Docker update `docker_version` accordingly and run `ansible-playbook`. The role compares the installed Docker version with `docker_version` and downloads or reinstalls the binaries when the versions differ. This causes systemd to restart `docker.service`.
 
-You can still use `--extra-vars="upgrade_docker=true"` to force a reinstall even if the installed version already matches `docker_version`. The same flag also forces a reinstall of the standalone `docker-compose` binary when enabled.
+You can still use `--extra-vars="upgrade_docker=true"` to force a reinstall even if the installed version already matches `docker_version`. The same flag also forces a reinstall of each selected Compose binary when enabled. Updating Compose alone does not restart the Docker service.
 
 To avoid restarting all Docker daemons on all of your hosts at once consider using `--limit` or reduce parallel Ansible tasks with `--forks`.
 

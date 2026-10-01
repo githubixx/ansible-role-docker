@@ -93,6 +93,10 @@ provisioner:
         docker_firewall_flavor: "nftables"
       test-docker-ubuntu2204:
         docker_compose_type: "standalone"
+      test-docker-ubuntu2404:
+        docker_compose_type: "plugin"
+      test-docker-ubuntu2604:
+        docker_compose_type: "both"
 
 scenario:
   name: default

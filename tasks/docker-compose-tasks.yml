@@ -1,0 +1,21 @@
+---
+- name: Install standalone Docker Compose
+  when: docker_compose_type in ['standalone', 'both']
+  ansible.builtin.include_tasks: docker-compose-install.yml
+  vars:
+    docker__compose_directory: "{{ docker_compose_bin_directory }}"
+
+- name: Create Docker CLI plugins directory
+  when: docker_compose_type in ['plugin', 'both']
+  ansible.builtin.file:
+    path: "{{ docker_compose_plugin_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install Docker Compose CLI plugin
+  when: docker_compose_type in ['plugin', 'both']
+  ansible.builtin.include_tasks: docker-compose-install.yml
+  vars:
+    docker__compose_directory: "{{ docker_compose_plugin_directory }}"

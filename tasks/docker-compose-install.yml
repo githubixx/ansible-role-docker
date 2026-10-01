@@ -1,17 +1,17 @@
 ---
-- name: Register docker-compose binary is installed
+- name: Register Docker Compose binary is installed
   ansible.builtin.stat:
-    path: "{{ docker_compose_bin_directory }}/docker-compose"
+    path: "{{ docker__compose_directory }}/docker-compose"
   register: docker__docker_compose_bin_stat
 
-- name: Register installed docker-compose version
+- name: Register installed Docker Compose version
   when: docker__docker_compose_bin_stat.stat.exists
   ansible.builtin.command:
-    cmd: "{{ docker_compose_bin_directory }}/docker-compose version --short"
+    cmd: "{{ docker__compose_directory }}/docker-compose version --short"
   register: docker__docker_compose_version_installed
   changed_when: false
 
-- name: Register if docker-compose binary needs installation
+- name: Register if Docker Compose binary needs installation
   ansible.builtin.set_fact:
     docker__install_docker_compose: >-
       {{
@@ -26,14 +26,14 @@
         )
       }}
 
-- name: Downloading docker-compose binary
+- name: Download Docker Compose binary
+  when: docker__install_docker_compose
   ansible.builtin.get_url:
     url: >-
       https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-{{ ansible_facts['system'] | lower }}-{{ ansible_facts['architecture'] }}
-    dest: "{{ docker_compose_bin_directory }}/docker-compose"
+    dest: "{{ docker__compose_directory }}/docker-compose"
     mode: "{{ docker_compose_bin_file_perm }}"
     owner: "{{ docker_compose_bin_owner }}"
     group: "{{ docker_compose_bin_group }}"
     checksum: >-
-      sha256:https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}//docker-compose-{{ ansible_facts['system'] | lower }}-{{ ansible_facts['architecture'] }}.sha256
-  when: docker__install_docker_compose
+      sha256:https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-{{ ansible_facts['system'] | lower }}-{{ ansible_facts['architecture'] }}.sha256

@@ -83,18 +83,85 @@
         - docker__http.status == 200
         - "'docker-role-ok' in docker__http.content"
 
-- name: Verify docker-compose installed
-  hosts: test-docker-ubuntu2204
+- name: Verify standalone Docker Compose
+  hosts: test-docker-ubuntu2204:test-docker-ubuntu2604
   vars:
-    docker_compose_version_output: "Docker Compose version"
+    docker_verify_compose_version: "5.5.1"
   tasks:
-    - name: Check docker-compose version output
-      ansible.builtin.command:
-        cmd: "docker-compose -v"
-      register: docker__docker_compose_version
-      changed_when: false
+    - name: Check standalone Compose binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/docker-compose
+      register: docker__standalone_compose
 
-    - name: Ensure docker-compose --version output
+    - name: Ensure standalone Compose binary is executable
       ansible.builtin.assert:
         that:
-          - "docker_compose_version_output in docker__docker_compose_version.stdout"
+          - docker__standalone_compose.stat.isreg | default(false)
+          - docker__standalone_compose.stat.mode == '0755'
+          - docker__standalone_compose.stat.pw_name == 'root'
+          - docker__standalone_compose.stat.gr_name == 'root'
+
+    - name: Get standalone Compose version
+      ansible.builtin.command:
+        cmd: /usr/local/bin/docker-compose version --short
+      register: docker__standalone_compose_version
+      changed_when: false
+
+    - name: Ensure standalone Compose version
+      ansible.builtin.assert:
+        that:
+          - docker__standalone_compose_version.stdout | trim == docker_verify_compose_version
+
+- name: Verify Docker Compose CLI plugin
+  hosts: test-docker-ubuntu2404:test-docker-ubuntu2604
+  vars:
+    docker_verify_compose_version: "5.5.1"
+  tasks:
+    - name: Check Compose plugin binary
+      ansible.builtin.stat:
+        path: /usr/local/lib/docker/cli-plugins/docker-compose
+      register: docker__compose_plugin
+
+    - name: Ensure Compose plugin binary is executable
+      ansible.builtin.assert:
+        that:
+          - docker__compose_plugin.stat.isreg | default(false)
+          - docker__compose_plugin.stat.mode == '0755'
+          - docker__compose_plugin.stat.pw_name == 'root'
+          - docker__compose_plugin.stat.gr_name == 'root'
+
+    - name: Get Compose CLI plugin version
+      ansible.builtin.command:
+        cmd: /usr/local/bin/docker compose version --short
+      register: docker__compose_plugin_version
+      changed_when: false
+
+    - name: Ensure Docker CLI discovers the Compose plugin
+      ansible.builtin.assert:
+        that:
+          - docker__compose_plugin_version.stdout | trim == docker_verify_compose_version
+
+- name: Verify unselected Compose paths on fresh hosts
+  hosts: test-docker-ubuntu2204:test-docker-ubuntu2404:debian:archlinux
+  tasks:
+    - name: Check unselected Compose binary
+      ansible.builtin.stat:
+        path: "{{ '/usr/local/lib/docker/cli-plugins' if inventory_hostname == 'test-docker-ubuntu2204' else '/usr/local/bin' }}/docker-compose"
+      register: docker__unselected_compose
+
+    - name: Ensure no Compose binary was installed at the unselected path
+      ansible.builtin.assert:
+        that:
+          - not docker__unselected_compose.stat.exists
+
+    - name: Check plugin path on hosts with Compose disabled
+      when: docker_compose_type is not defined
+      ansible.builtin.stat:
+        path: /usr/local/lib/docker/cli-plugins/docker-compose
+      register: docker__disabled_compose_plugin
+
+    - name: Ensure no Compose plugin was installed on disabled hosts
+      when: docker_compose_type is not defined
+      ansible.builtin.assert:
+        that:
+          - not docker__disabled_compose_plugin.stat.exists
